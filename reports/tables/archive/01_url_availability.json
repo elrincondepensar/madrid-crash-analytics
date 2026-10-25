@@ -1,0 +1,32 @@
+{
+  "accidents_2019": {
+    "url": "https://datos.madrid.es/egob/catalogo/300228-28-accidentes-trafico-detalle.csv",
+    "status_code": 200,
+    "content_type": "text/csv; charset=utf-8",
+    "content_length": "20"
+  },
+  "accidents_2024": {
+    "url": "https://datos.madrid.es/egob/catalogo/300228-33-accidentes-trafico-detalle.csv",
+    "status_code": 404,
+    "content_type": "text/html; charset=utf-8",
+    "content_length": "15596"
+  },
+  "permanent_counts": {
+    "url": "https://datos.madrid.es/egob/catalogo/300233-0-aforo-trafico-permanentes.csv",
+    "status_code": 404,
+    "content_type": "text/html; charset=utf-8",
+    "content_length": "15592"
+  },
+  "traffic_history": {
+    "url": "https://datos.madrid.es/egob/catalogo/208627-0-transporte-ptomedida-historico.csv",
+    "status_code": 404,
+    "content_type": "text/html; charset=utf-8",
+    "content_length": "15602"
+  },
+  "street_directory": {
+    "url": "https://datos.madrid.es/egob/catalogo/200075-4-callejero.csv",
+    "status_code": 200,
+    "content_type": "text/csv; charset=utf-8",
+    "content_length": "20"
+  }
+}

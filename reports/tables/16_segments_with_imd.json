@@ -1,0 +1,9 @@
+{
+  "n_segments": 3928,
+  "n_segments_with_imd": 1353,
+  "imd_mean_per_segment_stats": {
+    "n_notnull": 1353,
+    "median": 13.081,
+    "p90": 43.846399999999996
+  }
+}

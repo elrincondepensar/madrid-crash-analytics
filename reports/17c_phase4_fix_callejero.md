@@ -1,0 +1,34 @@
+# Source Audit Report
+
+## Callejero repair
+
+{
+  "n_input": 9408,
+  "n_output": 9285,
+  "n_dropped": 123,
+  "crs": 25830,
+  "n_non_finite_bounds": 0,
+  "geom_type_distribution": {
+    "Polygon": 8644,
+    "MultiPolygon": 641
+  },
+  "columns": [
+    "TOP_ID",
+    "TOP_ID_COM",
+    "TOP_ID_TER",
+    "TVIA_ID",
+    "TOP_DT_FCH",
+    "TOP_DT_F_1",
+    "CV_TX_DENO",
+    "DEN_TX_PAR",
+    "DEN_TX_NOM",
+    "geometry"
+  ]
+}
+
+## Notes
+
+- Input: 9,408 polygons from Viales SHP (Geoportal).
+- Repaired via shapely.make_valid + buffer(0) fallback.
+- Saved as GeoParquet with CRS metadata AND legacy geometry_wkt.
+- Downstream point-in-polygon joins can now use `gpd.read_parquet()` directly without reprojection ambiguity.

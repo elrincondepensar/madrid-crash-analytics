@@ -1,0 +1,67 @@
+{
+  "url": "https://datos.madrid.es/dataset/208627-0-transporte-ptomedida-historico/resource/208627-0-transporte-ptomedida-historico-zip/download/208627-0-transporte-ptomedida-historico-zip.zip",
+  "size_bytes": 79348668,
+  "n_files": 1,
+  "sample_names": [
+    "12-2022.csv"
+  ],
+  "schema": {
+    "columns": [
+      "id",
+      "fecha",
+      "tipo_elem",
+      "intensidad",
+      "ocupacion",
+      "carga",
+      "vmed",
+      "error",
+      "periodo_integracion"
+    ],
+    "dtypes": {
+      "id": "int64",
+      "fecha": "str",
+      "tipo_elem": "str",
+      "intensidad": "int64",
+      "ocupacion": "int64",
+      "carga": "int64",
+      "vmed": "int64",
+      "error": "str",
+      "periodo_integracion": "int64"
+    },
+    "sample_rows": [
+      {
+        "id": 1001,
+        "fecha": "2022-12-01 00:00:00",
+        "tipo_elem": "M30",
+        "intensidad": 3240,
+        "ocupacion": 9,
+        "carga": 0,
+        "vmed": 59,
+        "error": "N",
+        "periodo_integracion": 5
+      },
+      {
+        "id": 1001,
+        "fecha": "2022-12-01 00:15:00",
+        "tipo_elem": "M30",
+        "intensidad": 3240,
+        "ocupacion": 9,
+        "carga": 0,
+        "vmed": 59,
+        "error": "N",
+        "periodo_integracion": 5
+      },
+      {
+        "id": 1001,
+        "fecha": "2022-12-01 00:30:00",
+        "tipo_elem": "M30",
+        "intensidad": 300,
+        "ocupacion": 1,
+        "carga": 0,
+        "vmed": 66,
+        "error": "N",
+        "periodo_integracion": 5
+      }
+    ]
+  }
+}

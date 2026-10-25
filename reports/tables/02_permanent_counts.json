@@ -1,0 +1,991 @@
+{
+  "n_resources": 89,
+  "metadata": [
+    {
+      "name": "300233-110-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-110-aforo-trafico-permanentes-csv/download/300233-110-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "n_stations": 60,
+      "columns": [
+        "Nº",
+        "ESTACION",
+        "LATITUD",
+        "LONGITUD"
+      ]
+    },
+    {
+      "name": "300233-112-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-112-aforo-trafico-permanentes-csv/download/300233-112-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "n_stations": 120,
+      "columns": [
+        "Estación",
+        "Nombre",
+        "Latitud",
+        "Longitud",
+        "Sentido",
+        "Orient."
+      ]
+    }
+  ],
+  "measurements": [
+    {
+      "name": "300233-0-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-0-aforo-trafico-permanentes-csv/download/300233-0-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/12/2023",
+        "max": "31/12/2023"
+      }
+    },
+    {
+      "name": "300233-1-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-1-aforo-trafico-permanentes-csv/download/300233-1-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/03/2025",
+        "max": "31/03/2025"
+      }
+    },
+    {
+      "name": "300233-2-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-2-aforo-trafico-permanentes-csv/download/300233-2-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/12/22",
+        "max": "31/12/22"
+      }
+    },
+    {
+      "name": "300233-3-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-3-aforo-trafico-permanentes-csv/download/300233-3-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 1044731,
+        "n_non_empty": 1044731,
+        "min": "01/12/2024",
+        "max": "31/12/2024"
+      }
+    },
+    {
+      "name": "300233-4-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-4-aforo-trafico-permanentes-csv/download/300233-4-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/12/2020",
+        "max": "31/12/2020"
+      }
+    },
+    {
+      "name": "300233-8-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-8-aforo-trafico-permanentes-csv/download/300233-8-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/12/19",
+        "max": "31/12/19"
+      }
+    },
+    {
+      "name": "300233-13-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-13-aforo-trafico-permanentes-csv/download/300233-13-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/02/2025",
+        "max": "28/02/2025"
+      }
+    },
+    {
+      "name": "300233-14-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-14-aforo-trafico-permanentes-csv/download/300233-14-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/12/18",
+        "max": "31/12/18"
+      }
+    },
+    {
+      "name": "300233-15-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-15-aforo-trafico-permanentes-csv/download/300233-15-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/11/2023",
+        "max": "30/11/2023"
+      }
+    },
+    {
+      "name": "300233-16-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-16-aforo-trafico-permanentes-csv/download/300233-16-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24366,
+        "n_non_empty": 24366,
+        "min": "01/11/2022",
+        "max": "30/11/2022"
+      }
+    },
+    {
+      "name": "300233-17-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-17-aforo-trafico-permanentes-csv/download/300233-17-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7084,
+        "n_non_empty": 7084,
+        "min": "01/11/2021",
+        "max": "30/11/2021"
+      }
+    },
+    {
+      "name": "300233-18-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-18-aforo-trafico-permanentes-csv/download/300233-18-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7080,
+        "n_non_empty": 7080,
+        "min": "01/11/2020",
+        "max": "30/11/2020"
+      }
+    },
+    {
+      "name": "300233-25-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-25-aforo-trafico-permanentes-csv/download/300233-25-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/01/2025",
+        "max": "31/01/2025"
+      }
+    },
+    {
+      "name": "300233-26-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-26-aforo-trafico-permanentes-csv/download/300233-26-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/10/2024",
+        "max": "31/10/2024"
+      }
+    },
+    {
+      "name": "300233-27-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-27-aforo-trafico-permanentes-csv/download/300233-27-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/10/2021",
+        "max": "31/10/2021"
+      }
+    },
+    {
+      "name": "300233-28-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-28-aforo-trafico-permanentes-csv/download/300233-28-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/10/2022",
+        "max": "31/10/2022"
+      }
+    },
+    {
+      "name": "300233-29-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-29-aforo-trafico-permanentes-csv/download/300233-29-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/10/2020",
+        "max": "31/10/2020"
+      }
+    },
+    {
+      "name": "300233-36-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-36-aforo-trafico-permanentes-csv/download/300233-36-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/10/18",
+        "max": "31/10/18"
+      }
+    },
+    {
+      "name": "300233-37-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-37-aforo-trafico-permanentes-csv/download/300233-37-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24365,
+        "n_non_empty": 24365,
+        "min": "01/09/2022",
+        "max": "30/09/2022"
+      }
+    },
+    {
+      "name": "300233-38-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-38-aforo-trafico-permanentes-csv/download/300233-38-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24366,
+        "n_non_empty": 24366,
+        "min": "01/09/2023",
+        "max": "30/09/2023"
+      }
+    },
+    {
+      "name": "300233-39-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-39-aforo-trafico-permanentes-csv/download/300233-39-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 10800,
+        "n_non_empty": 10800,
+        "min": "01/09/20",
+        "max": "30/09/20"
+      }
+    },
+    {
+      "name": "300233-44-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-44-aforo-trafico-permanentes-csv/download/300233-44-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/08/2024",
+        "max": "31/08/2024"
+      }
+    },
+    {
+      "name": "300233-45-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-45-aforo-trafico-permanentes-csv/download/300233-45-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7080,
+        "n_non_empty": 7080,
+        "min": "01/09/19",
+        "max": "30/09/19"
+      }
+    },
+    {
+      "name": "300233-46-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-46-aforo-trafico-permanentes-csv/download/300233-46-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/08/2022",
+        "max": "31/08/2022"
+      }
+    },
+    {
+      "name": "300233-47-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-47-aforo-trafico-permanentes-csv/download/300233-47-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/08/20",
+        "max": "31/08/20"
+      }
+    },
+    {
+      "name": "300233-53-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-53-aforo-trafico-permanentes-csv/download/300233-53-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/07/2024",
+        "max": "31/07/2024"
+      }
+    },
+    {
+      "name": "300233-54-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-54-aforo-trafico-permanentes-csv/download/300233-54-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/08/18",
+        "max": "31/08/18"
+      }
+    },
+    {
+      "name": "300233-55-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-55-aforo-trafico-permanentes-csv/download/300233-55-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/07/2022",
+        "max": "31/07/2022"
+      }
+    },
+    {
+      "name": "300233-56-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-56-aforo-trafico-permanentes-csv/download/300233-56-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/07/2021",
+        "max": "31/07/2021"
+      }
+    },
+    {
+      "name": "300233-57-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-57-aforo-trafico-permanentes-csv/download/300233-57-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/07/20",
+        "max": "31/07/20"
+      }
+    },
+    {
+      "name": "300233-62-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-62-aforo-trafico-permanentes-csv/download/300233-62-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/07/18",
+        "max": "31/07/18"
+      }
+    },
+    {
+      "name": "300233-63-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-63-aforo-trafico-permanentes-csv/download/300233-63-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7080,
+        "n_non_empty": 7080,
+        "min": "01/06/2024",
+        "max": "30/06/2024"
+      }
+    },
+    {
+      "name": "300233-64-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-64-aforo-trafico-permanentes-csv/download/300233-64-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24366,
+        "n_non_empty": 24366,
+        "min": "01/06/2023",
+        "max": "30/06/2023"
+      }
+    },
+    {
+      "name": "300233-65-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-65-aforo-trafico-permanentes-csv/download/300233-65-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7080,
+        "n_non_empty": 7080,
+        "min": "01/06/20",
+        "max": "30/06/20"
+      }
+    },
+    {
+      "name": "300233-70-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-70-aforo-trafico-permanentes-csv/download/300233-70-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7080,
+        "n_non_empty": 7080,
+        "min": "01/06/2019",
+        "max": "30/06/2019"
+      }
+    },
+    {
+      "name": "300233-71-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-71-aforo-trafico-permanentes-csv/download/300233-71-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/05/2024",
+        "max": "31/05/2024"
+      }
+    },
+    {
+      "name": "300233-72-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-72-aforo-trafico-permanentes-csv/download/300233-72-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/05/2021",
+        "max": "31/05/2021"
+      }
+    },
+    {
+      "name": "300233-73-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-73-aforo-trafico-permanentes-csv/download/300233-73-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/05/20",
+        "max": "31/05/20"
+      }
+    },
+    {
+      "name": "300233-78-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-78-aforo-trafico-permanentes-csv/download/300233-78-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/05/2018",
+        "max": "31/05/2018"
+      }
+    },
+    {
+      "name": "300233-79-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-79-aforo-trafico-permanentes-csv/download/300233-79-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/03/2023",
+        "max": "31/03/2023"
+      }
+    },
+    {
+      "name": "300233-80-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-80-aforo-trafico-permanentes-csv/download/300233-80-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7084,
+        "n_non_empty": 7084,
+        "min": "01/04/2021",
+        "max": "30/04/2021"
+      }
+    },
+    {
+      "name": "300233-85-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-85-aforo-trafico-permanentes-csv/download/300233-85-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7080,
+        "n_non_empty": 7080,
+        "min": "01/04/18",
+        "max": "30/04/18"
+      }
+    },
+    {
+      "name": "300233-86-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-86-aforo-trafico-permanentes-csv/download/300233-86-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/03/2022",
+        "max": "31/03/2022"
+      }
+    },
+    {
+      "name": "300233-92-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-92-aforo-trafico-permanentes-csv/download/300233-92-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/03/19",
+        "max": "31/03/19"
+      }
+    },
+    {
+      "name": "300233-93-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-93-aforo-trafico-permanentes-csv/download/300233-93-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/03/18",
+        "max": "31/03/18"
+      }
+    },
+    {
+      "name": "300233-94-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-94-aforo-trafico-permanentes-csv/download/300233-94-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/02/2022",
+        "max": "28/02/2022"
+      }
+    },
+    {
+      "name": "300233-95-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-95-aforo-trafico-permanentes-csv/download/300233-95-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 6608,
+        "n_non_empty": 6608,
+        "min": "01/02/2021",
+        "max": "28/02/2021"
+      }
+    },
+    {
+      "name": "300233-100-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-100-aforo-trafico-permanentes-csv/download/300233-100-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 6608,
+        "n_non_empty": 6608,
+        "min": "01/02/19",
+        "max": "28/02/19"
+      }
+    },
+    {
+      "name": "300233-101-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-101-aforo-trafico-permanentes-csv/download/300233-101-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/01/2023",
+        "max": "31/01/2023"
+      }
+    },
+    {
+      "name": "300233-102-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-102-aforo-trafico-permanentes-csv/download/300233-102-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/01/2022",
+        "max": "31/01/2022"
+      }
+    },
+    {
+      "name": "300233-107-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-107-aforo-trafico-permanentes-csv/download/300233-107-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/01/19",
+        "max": "31/01/19"
+      }
+    },
+    {
+      "name": "300233-109-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-109-aforo-trafico-permanentes-csv/download/300233-109-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/01/18",
+        "max": "31/01/18"
+      }
+    },
+    {
+      "name": "300233-116-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-116-aforo-trafico-permanentes-csv/download/300233-116-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/04/2022",
+        "max": "30/04/2022"
+      }
+    },
+    {
+      "name": "300233-118-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-118-aforo-trafico-permanentes-csv/download/300233-118-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/08/2023",
+        "max": "31/08/2023"
+      }
+    },
+    {
+      "name": "300233-119-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-119-aforo-trafico-permanentes-csv/download/300233-119-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7080,
+        "n_non_empty": 7080,
+        "min": "01/04/2024",
+        "max": "30/04/2024"
+      }
+    },
+    {
+      "name": "300233-120-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-120-aforo-trafico-permanentes-csv/download/300233-120-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7080,
+        "n_non_empty": 7080,
+        "min": "01/09/2024",
+        "max": "30/09/2024"
+      }
+    },
+    {
+      "name": "300233-121-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-121-aforo-trafico-permanentes-csv/download/300233-121-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7080,
+        "n_non_empty": 7080,
+        "min": "01/09/18",
+        "max": "30/09/18"
+      }
+    },
+    {
+      "name": "300233-124-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-124-aforo-trafico-permanentes-csv/download/300233-124-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/01/20",
+        "max": "31/01/20"
+      }
+    },
+    {
+      "name": "300233-125-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-125-aforo-trafico-permanentes-csv/download/300233-125-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7080,
+        "n_non_empty": 7080,
+        "min": "01/04/20",
+        "max": "30/04/20"
+      }
+    },
+    {
+      "name": "300233-127-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-127-aforo-trafico-permanentes-csv/download/300233-127-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/02/18",
+        "max": "28/02/18"
+      }
+    },
+    {
+      "name": "300233-128-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-128-aforo-trafico-permanentes-csv/download/300233-128-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7080,
+        "n_non_empty": 7080,
+        "min": "01/06/2021",
+        "max": "30/06/2021"
+      }
+    },
+    {
+      "name": "300233-133-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-133-aforo-trafico-permanentes-csv/download/300233-133-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/05/2023",
+        "max": "31/05/2023"
+      }
+    },
+    {
+      "name": "300233-134-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-134-aforo-trafico-permanentes-csv/download/300233-134-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 6844,
+        "n_non_empty": 6844,
+        "min": "01/02/2024",
+        "max": "29/02/2024"
+      }
+    },
+    {
+      "name": "300233-135-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-135-aforo-trafico-permanentes-csv/download/300233-135-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7080,
+        "n_non_empty": 7080,
+        "min": "01/11/2024",
+        "max": "30/11/2024"
+      }
+    },
+    {
+      "name": "300233-137-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-137-aforo-trafico-permanentes-csv/download/300233-137-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/07/19",
+        "max": "31/07/19"
+      }
+    },
+    {
+      "name": "300233-138-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-138-aforo-trafico-permanentes-csv/download/300233-138-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7080,
+        "n_non_empty": 7080,
+        "min": "01/11/19",
+        "max": "30/11/19"
+      }
+    },
+    {
+      "name": "300233-140-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-140-aforo-trafico-permanentes-csv/download/300233-140-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 14632,
+        "n_non_empty": 14632,
+        "min": "01/01/2021",
+        "max": "31/01/2021"
+      }
+    },
+    {
+      "name": "300233-142-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-142-aforo-trafico-permanentes-csv/download/300233-142-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7084,
+        "n_non_empty": 7084,
+        "min": "01/09/2021",
+        "max": "30/09/2021"
+      }
+    },
+    {
+      "name": "300233-143-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-143-aforo-trafico-permanentes-csv/download/300233-143-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7081,
+        "n_non_empty": 7081,
+        "min": "01/06/18",
+        "max": "30/06/18"
+      }
+    },
+    {
+      "name": "300233-144-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-144-aforo-trafico-permanentes-csv/download/300233-144-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/06/2022",
+        "max": "30/06/2022"
+      }
+    },
+    {
+      "name": "300233-150-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-150-aforo-trafico-permanentes-csv/download/300233-150-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/03/2021",
+        "max": "31/03/2021"
+      }
+    },
+    {
+      "name": "300233-152-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-152-aforo-trafico-permanentes-csv/download/300233-152-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/12/21",
+        "max": "31/12/21"
+      }
+    },
+    {
+      "name": "300233-154-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-154-aforo-trafico-permanentes-csv/download/300233-154-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/05/2022",
+        "max": "31/05/2022"
+      }
+    },
+    {
+      "name": "300233-155-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-155-aforo-trafico-permanentes-csv/download/300233-155-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7080,
+        "n_non_empty": 7080,
+        "min": "01/11/18",
+        "max": "30/11/18"
+      }
+    },
+    {
+      "name": "300233-161-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-161-aforo-trafico-permanentes-csv/download/300233-161-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/10/19",
+        "max": "31/10/19"
+      }
+    },
+    {
+      "name": "300233-162-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-162-aforo-trafico-permanentes-csv/download/300233-162-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/03/20",
+        "max": "31/03/20"
+      }
+    },
+    {
+      "name": "300233-163-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-163-aforo-trafico-permanentes-csv/download/300233-163-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/08/2021",
+        "max": "31/08/2021"
+      }
+    },
+    {
+      "name": "300233-166-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-166-aforo-trafico-permanentes-csv/download/300233-166-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/02/2023",
+        "max": "28/02/2023"
+      }
+    },
+    {
+      "name": "300233-167-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-167-aforo-trafico-permanentes-csv/download/300233-167-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/04/2023",
+        "max": "30/04/2023"
+      }
+    },
+    {
+      "name": "300233-168-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-168-aforo-trafico-permanentes-csv/download/300233-168-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/07/2023",
+        "max": "31/07/2023"
+      }
+    },
+    {
+      "name": "300233-169-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-169-aforo-trafico-permanentes-csv/download/300233-169-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/10/2023",
+        "max": "31/10/2023"
+      }
+    },
+    {
+      "name": "300233-170-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-170-aforo-trafico-permanentes-csv/download/300233-170-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 24370,
+        "n_non_empty": 24370,
+        "min": "01/01/2024",
+        "max": "31/01/2024"
+      }
+    },
+    {
+      "name": "300233-171-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-171-aforo-trafico-permanentes-csv/download/300233-171-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/03/2024",
+        "max": "31/03/2024"
+      }
+    },
+    {
+      "name": "300233-174-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-174-aforo-trafico-permanentes-csv/download/300233-174-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7080,
+        "n_non_empty": 7080,
+        "min": "01/04/19",
+        "max": "30/04/19"
+      }
+    },
+    {
+      "name": "300233-175-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-175-aforo-trafico-permanentes-csv/download/300233-175-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/05/19",
+        "max": "31/05/19"
+      }
+    },
+    {
+      "name": "300233-176-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-176-aforo-trafico-permanentes-csv/download/300233-176-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 7316,
+        "n_non_empty": 7316,
+        "min": "01/08/19",
+        "max": "31/08/19"
+      }
+    },
+    {
+      "name": "300233-177-aforo-trafico-permanentes-csv",
+      "url": "https://datos.madrid.es/dataset/300233-0-aforo-trafico-permanentes/resource/300233-177-aforo-trafico-permanentes-csv/download/300233-177-aforo-trafico-permanentes-csv.csv",
+      "last_modified": null,
+      "date_extent": {
+        "n_rows": 6844,
+        "n_non_empty": 6844,
+        "min": "01/02/20",
+        "max": "29/02/20"
+      }
+    }
+  ],
+  "unreadable": []
+}

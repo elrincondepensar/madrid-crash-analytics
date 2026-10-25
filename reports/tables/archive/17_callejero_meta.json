@@ -1,0 +1,16 @@
+{
+  "n_resources": 2,
+  "resources": [
+    {
+      "name": "300733-0-mapas-callejero-rotulacion",
+      "format": "SHP",
+      "url": "https://sigma.madrid.es/vector/rest/services/CALLEJERO/ROTULACION_CALLEJERO/MapServer/WMSServer?request=GetCapabilities&service=WMS"
+    },
+    {
+      "name": "300733-1-mapas-callejero-rotulacion",
+      "format": "ZIP",
+      "url": "https://geoportal.madrid.es/fsdescargas/IDEAM_WBGEOPORTAL/CALLEJERO/ROTULACION/ROTULACION_SHP.zip"
+    }
+  ],
+  "shp_url": "https://sigma.madrid.es/vector/rest/services/CALLEJERO/ROTULACION_CALLEJERO/MapServer/WMSServer?request=GetCapabilities&service=WMS"
+}

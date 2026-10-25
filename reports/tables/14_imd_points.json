@@ -1,0 +1,369 @@
+{
+  "n_points": 1961,
+  "n_columns": 40,
+  "schema_fields": [
+    {
+      "name": "AÑO",
+      "type": "int"
+    },
+    {
+      "name": "Nombre",
+      "type": "string"
+    },
+    {
+      "name": "Tramo",
+      "type": "string"
+    },
+    {
+      "name": "Latitud",
+      "type": "float"
+    },
+    {
+      "name": "Longitud",
+      "type": "float"
+    },
+    {
+      "name": "Bus S1",
+      "type": "string"
+    },
+    {
+      "name": "Pesados S1",
+      "type": "string"
+    },
+    {
+      "name": "Bicis S1",
+      "type": "string"
+    },
+    {
+      "name": "Taxis S1",
+      "type": "string"
+    },
+    {
+      "name": "Motos S1",
+      "type": "string"
+    },
+    {
+      "name": "Coches S1",
+      "type": "string"
+    },
+    {
+      "name": "Total S1",
+      "type": "string"
+    },
+    {
+      "name": "HP S1",
+      "type": "string"
+    },
+    {
+      "name": "Valor HP S",
+      "type": "string"
+    },
+    {
+      "name": "%HP S1",
+      "type": "string"
+    },
+    {
+      "name": "Bus S2",
+      "type": "string"
+    },
+    {
+      "name": "Pesados S2",
+      "type": "string"
+    },
+    {
+      "name": "Bicis S2",
+      "type": "string"
+    },
+    {
+      "name": "Taxis S2",
+      "type": "string"
+    },
+    {
+      "name": "Motos S2",
+      "type": "string"
+    },
+    {
+      "name": "Coches S2",
+      "type": "string"
+    },
+    {
+      "name": "Total S2",
+      "type": "string"
+    },
+    {
+      "name": "HP S2",
+      "type": "string"
+    },
+    {
+      "name": "Valor HP_1",
+      "type": "string"
+    },
+    {
+      "name": "%HP S2",
+      "type": "string"
+    },
+    {
+      "name": "Bus T",
+      "type": "string"
+    },
+    {
+      "name": "Pesados T",
+      "type": "string"
+    },
+    {
+      "name": "Bicis T",
+      "type": "string"
+    },
+    {
+      "name": "Taxis T",
+      "type": "string"
+    },
+    {
+      "name": "Motos T",
+      "type": "string"
+    },
+    {
+      "name": "Coches T",
+      "type": "string"
+    },
+    {
+      "name": "TOTAL",
+      "type": "float"
+    },
+    {
+      "name": "HP T",
+      "type": "string"
+    },
+    {
+      "name": "Valor HP T",
+      "type": "string"
+    },
+    {
+      "name": "%HP T",
+      "type": "string"
+    },
+    {
+      "name": "Rango Inte",
+      "type": "string"
+    }
+  ],
+  "columns": [
+    "point_id",
+    "name",
+    "lon",
+    "lat",
+    "AÑO",
+    "Nombre",
+    "Tramo",
+    "Latitud",
+    "Longitud",
+    "Bus S1",
+    "Pesados S1",
+    "Bicis S1",
+    "Taxis S1",
+    "Motos S1",
+    "Coches S1",
+    "Total S1",
+    "HP S1",
+    "Valor HP S",
+    "%HP S1",
+    "Bus S2",
+    "Pesados S2",
+    "Bicis S2",
+    "Taxis S2",
+    "Motos S2",
+    "Coches S2",
+    "Total S2",
+    "HP S2",
+    "Valor HP_1",
+    "%HP S2",
+    "Bus T",
+    "Pesados T",
+    "Bicis T",
+    "Taxis T",
+    "Motos T",
+    "Coches T",
+    "TOTAL",
+    "HP T",
+    "Valor HP T",
+    "%HP T",
+    "Rango Inte"
+  ],
+  "dtypes": {
+    "point_id": "int64",
+    "name": "str",
+    "lon": "float64",
+    "lat": "float64",
+    "AÑO": "str",
+    "Nombre": "str",
+    "Tramo": "str",
+    "Latitud": "str",
+    "Longitud": "str",
+    "Bus S1": "str",
+    "Pesados S1": "str",
+    "Bicis S1": "str",
+    "Taxis S1": "str",
+    "Motos S1": "str",
+    "Coches S1": "str",
+    "Total S1": "str",
+    "HP S1": "str",
+    "Valor HP S": "str",
+    "%HP S1": "str",
+    "Bus S2": "str",
+    "Pesados S2": "str",
+    "Bicis S2": "str",
+    "Taxis S2": "str",
+    "Motos S2": "str",
+    "Coches S2": "str",
+    "Total S2": "str",
+    "HP S2": "str",
+    "Valor HP_1": "str",
+    "%HP S2": "str",
+    "Bus T": "str",
+    "Pesados T": "str",
+    "Bicis T": "str",
+    "Taxis T": "str",
+    "Motos T": "str",
+    "Coches T": "str",
+    "TOTAL": "str",
+    "HP T": "str",
+    "Valor HP T": "str",
+    "%HP T": "str",
+    "Rango Inte": "str"
+  },
+  "bbox": {
+    "min_lon": -3.79756,
+    "max_lon": -3.57337,
+    "min_lat": 40.33586,
+    "max_lat": 40.51826
+  },
+  "name_nulls": 0,
+  "sample_rows": [
+    {
+      "point_id": 0,
+      "name": "Pelícano - Argüeso",
+      "lon": -3.73088,
+      "lat": 40.38273,
+      "AÑO": "2013",
+      "Nombre": "ABRANTES (Avenida)",
+      "Tramo": "Pelícano - Argüeso",
+      "Latitud": "40.382730000000002",
+      "Longitud": "-3.730880000000000",
+      "Bus S1": "-",
+      "Pesados S1": "-",
+      "Bicis S1": "-",
+      "Taxis S1": "-",
+      "Motos S1": "-",
+      "Coches S1": "-",
+      "Total S1": "4.769",
+      "HP S1": "14",
+      "Valor HP S": "357",
+      "%HP S1": "7,49%",
+      "Bus S2": "-",
+      "Pesados S2": "-",
+      "Bicis S2": "-",
+      "Taxis S2": "-",
+      "Motos S2": "-",
+      "Coches S2": "-",
+      "Total S2": "2.585",
+      "HP S2": "8",
+      "Valor HP_1": "194",
+      "%HP S2": "7,50%",
+      "Bus T": "-",
+      "Pesados T": "-",
+      "Bicis T": "-",
+      "Taxis T": "-",
+      "Motos T": "-",
+      "Coches T": "-",
+      "TOTAL": "7.354000000000000",
+      "HP T": "14",
+      "Valor HP T": "493",
+      "%HP T": "6,75%",
+      "Rango Inte": "Entre 5.000-10.000 Veh/día"
+    },
+    {
+      "point_id": 1,
+      "name": "Viejo de Leganés (Camino)- Besolla",
+      "lon": -3.73403333,
+      "lat": 40.37611667,
+      "AÑO": "2013",
+      "Nombre": "ABRANTES (Avenida)",
+      "Tramo": "Viejo de Leganés (Camino)- Besolla",
+      "Latitud": "40.376116670000002",
+      "Longitud": "-3.734033330000000",
+      "Bus S1": "-",
+      "Pesados S1": "-",
+      "Bicis S1": "-",
+      "Taxis S1": "-",
+      "Motos S1": "-",
+      "Coches S1": "-",
+      "Total S1": "6.606",
+      "HP S1": "19",
+      "Valor HP S": "478",
+      "%HP S1": "7,23%",
+      "Bus S2": "-",
+      "Pesados S2": "-",
+      "Bicis S2": "-",
+      "Taxis S2": "-",
+      "Motos S2": "-",
+      "Coches S2": "-",
+      "Total S2": "4.566",
+      "HP S2": "8",
+      "Valor HP_1": "315",
+      "%HP S2": "6,90%",
+      "Bus T": "-",
+      "Pesados T": "-",
+      "Bicis T": "-",
+      "Taxis T": "-",
+      "Motos T": "-",
+      "Coches T": "-",
+      "TOTAL": "11.170999999999999",
+      "HP T": "19",
+      "Valor HP T": "713",
+      "%HP T": "6,39%",
+      "Rango Inte": "Entre 10.000-20.000 Veh/día"
+    },
+    {
+      "point_id": 2,
+      "name": "Oporto (Avenida) - Portalegre",
+      "lon": -3.72188,
+      "lat": 40.38483,
+      "AÑO": "2013",
+      "Nombre": "ABRANTES (Avenida)",
+      "Tramo": "Oporto (Avenida) - Portalegre",
+      "Latitud": "40.384830000000001",
+      "Longitud": "-3.721880000000000",
+      "Bus S1": "-",
+      "Pesados S1": "-",
+      "Bicis S1": "-",
+      "Taxis S1": "-",
+      "Motos S1": "-",
+      "Coches S1": "-",
+      "Total S1": "3.822",
+      "HP S1": "14",
+      "Valor HP S": "281",
+      "%HP S1": "7,35%",
+      "Bus S2": "-",
+      "Pesados S2": "-",
+      "Bicis S2": "-",
+      "Taxis S2": "-",
+      "Motos S2": "-",
+      "Coches S2": "-",
+      "Total S2": "2.038",
+      "HP S2": "9",
+      "Valor HP_1": "136",
+      "%HP S2": "6,67%",
+      "Bus T": "-",
+      "Pesados T": "-",
+      "Bicis T": "-",
+      "Taxis T": "-",
+      "Motos T": "-",
+      "Coches T": "-",
+      "TOTAL": "5.860000000000000",
+      "HP T": "9",
+      "Valor HP T": "368",
+      "%HP T": "6,41%",
+      "Rango Inte": "Entre 5.000-10.000 Veh/día"
+    }
+  ]
+}

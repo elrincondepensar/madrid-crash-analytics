@@ -1,0 +1,1265 @@
+{
+  "prior_by_year": {
+    "counts": {
+      "2019": {
+        "no_injury": 11241,
+        "minor": 8329,
+        "serious": 2331,
+        "fatal": 33
+      },
+      "2020": {
+        "no_injury": 7357,
+        "minor": 5251,
+        "serious": 1530,
+        "fatal": 34
+      },
+      "2021": {
+        "no_injury": 9642,
+        "minor": 6399,
+        "serious": 1883,
+        "fatal": 28
+      },
+      "2022": {
+        "no_injury": 10917,
+        "minor": 7230,
+        "serious": 2044,
+        "fatal": 21
+      },
+      "2023": {
+        "no_injury": 11532,
+        "minor": 6951,
+        "serious": 2165,
+        "fatal": 24
+      },
+      "2024": {
+        "no_injury": 11644,
+        "minor": 6893,
+        "serious": 2133,
+        "fatal": 28
+      },
+      "2025": {
+        "no_injury": 12522,
+        "minor": 7053,
+        "serious": 2079,
+        "fatal": 34
+      }
+    },
+    "shares": {
+      "2019": {
+        "no_injury": 0.5125,
+        "minor": 0.3797,
+        "serious": 0.1063,
+        "fatal": 0.0015
+      },
+      "2020": {
+        "no_injury": 0.5191,
+        "minor": 0.3705,
+        "serious": 0.108,
+        "fatal": 0.0024
+      },
+      "2021": {
+        "no_injury": 0.5371,
+        "minor": 0.3565,
+        "serious": 0.1049,
+        "fatal": 0.0016
+      },
+      "2022": {
+        "no_injury": 0.5401,
+        "minor": 0.3577,
+        "serious": 0.1011,
+        "fatal": 0.001
+      },
+      "2023": {
+        "no_injury": 0.5579,
+        "minor": 0.3363,
+        "serious": 0.1047,
+        "fatal": 0.0012
+      },
+      "2024": {
+        "no_injury": 0.5626,
+        "minor": 0.333,
+        "serious": 0.1031,
+        "fatal": 0.0014
+      },
+      "2025": {
+        "no_injury": 0.5774,
+        "minor": 0.3252,
+        "serious": 0.0959,
+        "fatal": 0.0016
+      }
+    },
+    "figure": "reports\\figures\\phase3\\01_severity_by_year.png"
+  },
+  "covid_rupture": {
+    "pre_2019": {
+      "n_accidents": 21934,
+      "severity_share": {
+        "no_injury": 0.5125,
+        "minor": 0.3797,
+        "serious": 0.1063,
+        "fatal": 0.0015
+      },
+      "fatal_rate": 0.0015,
+      "serious_or_fatal_rate": 0.10778
+    },
+    "covid_2020_21": {
+      "n_accidents": 32124,
+      "severity_share": {
+        "no_injury": 0.5292,
+        "minor": 0.3627,
+        "serious": 0.1062,
+        "fatal": 0.0019
+      },
+      "fatal_rate": 0.00193,
+      "serious_or_fatal_rate": 0.10817
+    },
+    "post_2022_25": {
+      "n_accidents": 83270,
+      "severity_share": {
+        "no_injury": 0.5598,
+        "minor": 0.3378,
+        "serious": 0.1011,
+        "fatal": 0.0013
+      },
+      "fatal_rate": 0.00128,
+      "serious_or_fatal_rate": 0.10241
+    }
+  },
+  "temporal": {
+    "hour": {
+      "counts": {
+        "0": {
+          "no_injury": 2045,
+          "minor": 990,
+          "serious": 325,
+          "fatal": 6
+        },
+        "1": {
+          "no_injury": 1609,
+          "minor": 656,
+          "serious": 230,
+          "fatal": 5
+        },
+        "2": {
+          "no_injury": 1372,
+          "minor": 460,
+          "serious": 177,
+          "fatal": 9
+        },
+        "3": {
+          "no_injury": 1103,
+          "minor": 360,
+          "serious": 153,
+          "fatal": 6
+        },
+        "4": {
+          "no_injury": 954,
+          "minor": 303,
+          "serious": 131,
+          "fatal": 5
+        },
+        "5": {
+          "no_injury": 1147,
+          "minor": 337,
+          "serious": 188,
+          "fatal": 5
+        },
+        "6": {
+          "no_injury": 1517,
+          "minor": 643,
+          "serious": 281,
+          "fatal": 6
+        },
+        "7": {
+          "no_injury": 2028,
+          "minor": 1433,
+          "serious": 449,
+          "fatal": 8
+        },
+        "8": {
+          "no_injury": 3023,
+          "minor": 2427,
+          "serious": 690,
+          "fatal": 7
+        },
+        "9": {
+          "no_injury": 3730,
+          "minor": 2750,
+          "serious": 745,
+          "fatal": 8
+        },
+        "10": {
+          "no_injury": 3107,
+          "minor": 2216,
+          "serious": 612,
+          "fatal": 9
+        },
+        "11": {
+          "no_injury": 3261,
+          "minor": 2267,
+          "serious": 675,
+          "fatal": 10
+        },
+        "12": {
+          "no_injury": 3771,
+          "minor": 2560,
+          "serious": 775,
+          "fatal": 11
+        },
+        "13": {
+          "no_injury": 4112,
+          "minor": 2965,
+          "serious": 787,
+          "fatal": 11
+        },
+        "14": {
+          "no_injury": 4310,
+          "minor": 3752,
+          "serious": 1092,
+          "fatal": 10
+        },
+        "15": {
+          "no_injury": 4376,
+          "minor": 3315,
+          "serious": 915,
+          "fatal": 4
+        },
+        "16": {
+          "no_injury": 4584,
+          "minor": 2666,
+          "serious": 701,
+          "fatal": 8
+        },
+        "17": {
+          "no_injury": 4952,
+          "minor": 2758,
+          "serious": 728,
+          "fatal": 13
+        },
+        "18": {
+          "no_injury": 5222,
+          "minor": 3075,
+          "serious": 870,
+          "fatal": 9
+        },
+        "19": {
+          "no_injury": 5039,
+          "minor": 3217,
+          "serious": 887,
+          "fatal": 12
+        },
+        "20": {
+          "no_injury": 4623,
+          "minor": 3093,
+          "serious": 913,
+          "fatal": 13
+        },
+        "21": {
+          "no_injury": 3768,
+          "minor": 2543,
+          "serious": 783,
+          "fatal": 11
+        },
+        "22": {
+          "no_injury": 2761,
+          "minor": 1970,
+          "serious": 592,
+          "fatal": 8
+        },
+        "23": {
+          "no_injury": 2441,
+          "minor": 1350,
+          "serious": 466,
+          "fatal": 8
+        }
+      },
+      "shares": {
+        "0": {
+          "no_injury": 0.6075,
+          "minor": 0.2941,
+          "serious": 0.0966,
+          "fatal": 0.0018
+        },
+        "1": {
+          "no_injury": 0.6436,
+          "minor": 0.2624,
+          "serious": 0.092,
+          "fatal": 0.002
+        },
+        "2": {
+          "no_injury": 0.6799,
+          "minor": 0.2279,
+          "serious": 0.0877,
+          "fatal": 0.0045
+        },
+        "3": {
+          "no_injury": 0.68,
+          "minor": 0.2219,
+          "serious": 0.0943,
+          "fatal": 0.0037
+        },
+        "4": {
+          "no_injury": 0.6849,
+          "minor": 0.2175,
+          "serious": 0.094,
+          "fatal": 0.0036
+        },
+        "5": {
+          "no_injury": 0.684,
+          "minor": 0.201,
+          "serious": 0.1121,
+          "fatal": 0.003
+        },
+        "6": {
+          "no_injury": 0.6199,
+          "minor": 0.2628,
+          "serious": 0.1148,
+          "fatal": 0.0025
+        },
+        "7": {
+          "no_injury": 0.5176,
+          "minor": 0.3657,
+          "serious": 0.1146,
+          "fatal": 0.002
+        },
+        "8": {
+          "no_injury": 0.4918,
+          "minor": 0.3948,
+          "serious": 0.1122,
+          "fatal": 0.0011
+        },
+        "9": {
+          "no_injury": 0.5157,
+          "minor": 0.3802,
+          "serious": 0.103,
+          "fatal": 0.0011
+        },
+        "10": {
+          "no_injury": 0.5227,
+          "minor": 0.3728,
+          "serious": 0.103,
+          "fatal": 0.0015
+        },
+        "11": {
+          "no_injury": 0.5249,
+          "minor": 0.3649,
+          "serious": 0.1086,
+          "fatal": 0.0016
+        },
+        "12": {
+          "no_injury": 0.5299,
+          "minor": 0.3597,
+          "serious": 0.1089,
+          "fatal": 0.0015
+        },
+        "13": {
+          "no_injury": 0.5222,
+          "minor": 0.3765,
+          "serious": 0.0999,
+          "fatal": 0.0014
+        },
+        "14": {
+          "no_injury": 0.4703,
+          "minor": 0.4094,
+          "serious": 0.1192,
+          "fatal": 0.0011
+        },
+        "15": {
+          "no_injury": 0.5082,
+          "minor": 0.385,
+          "serious": 0.1063,
+          "fatal": 0.0005
+        },
+        "16": {
+          "no_injury": 0.576,
+          "minor": 0.335,
+          "serious": 0.0881,
+          "fatal": 0.001
+        },
+        "17": {
+          "no_injury": 0.586,
+          "minor": 0.3264,
+          "serious": 0.0861,
+          "fatal": 0.0015
+        },
+        "18": {
+          "no_injury": 0.5691,
+          "minor": 0.3351,
+          "serious": 0.0948,
+          "fatal": 0.001
+        },
+        "19": {
+          "no_injury": 0.5504,
+          "minor": 0.3514,
+          "serious": 0.0969,
+          "fatal": 0.0013
+        },
+        "20": {
+          "no_injury": 0.5349,
+          "minor": 0.3579,
+          "serious": 0.1056,
+          "fatal": 0.0015
+        },
+        "21": {
+          "no_injury": 0.5303,
+          "minor": 0.3579,
+          "serious": 0.1102,
+          "fatal": 0.0015
+        },
+        "22": {
+          "no_injury": 0.5179,
+          "minor": 0.3695,
+          "serious": 0.111,
+          "fatal": 0.0015
+        },
+        "23": {
+          "no_injury": 0.5723,
+          "minor": 0.3165,
+          "serious": 0.1093,
+          "fatal": 0.0019
+        }
+      }
+    },
+    "weekday": {
+      "counts": {
+        "0": {
+          "no_injury": 10380,
+          "minor": 6830,
+          "serious": 1965,
+          "fatal": 31
+        },
+        "1": {
+          "no_injury": 10955,
+          "minor": 7490,
+          "serious": 2095,
+          "fatal": 21
+        },
+        "2": {
+          "no_injury": 11222,
+          "minor": 7477,
+          "serious": 2055,
+          "fatal": 25
+        },
+        "3": {
+          "no_injury": 11365,
+          "minor": 7490,
+          "serious": 2220,
+          "fatal": 26
+        },
+        "4": {
+          "no_injury": 12301,
+          "minor": 7967,
+          "serious": 2339,
+          "fatal": 40
+        },
+        "5": {
+          "no_injury": 9924,
+          "minor": 5834,
+          "serious": 1861,
+          "fatal": 33
+        },
+        "6": {
+          "no_injury": 8708,
+          "minor": 5018,
+          "serious": 1630,
+          "fatal": 26
+        }
+      },
+      "shares": {
+        "0": {
+          "no_injury": 0.5405,
+          "minor": 0.3556,
+          "serious": 0.1023,
+          "fatal": 0.0016
+        },
+        "1": {
+          "no_injury": 0.5328,
+          "minor": 0.3643,
+          "serious": 0.1019,
+          "fatal": 0.001
+        },
+        "2": {
+          "no_injury": 0.5401,
+          "minor": 0.3598,
+          "serious": 0.0989,
+          "fatal": 0.0012
+        },
+        "3": {
+          "no_injury": 0.5386,
+          "minor": 0.355,
+          "serious": 0.1052,
+          "fatal": 0.0012
+        },
+        "4": {
+          "no_injury": 0.5432,
+          "minor": 0.3518,
+          "serious": 0.1033,
+          "fatal": 0.0018
+        },
+        "5": {
+          "no_injury": 0.5622,
+          "minor": 0.3305,
+          "serious": 0.1054,
+          "fatal": 0.0019
+        },
+        "6": {
+          "no_injury": 0.5661,
+          "minor": 0.3262,
+          "serious": 0.106,
+          "fatal": 0.0017
+        }
+      }
+    },
+    "month": {
+      "counts": {
+        "1": {
+          "no_injury": 6187,
+          "minor": 3777,
+          "serious": 1058,
+          "fatal": 20
+        },
+        "2": {
+          "no_injury": 6136,
+          "minor": 3781,
+          "serious": 1136,
+          "fatal": 14
+        },
+        "3": {
+          "no_injury": 6426,
+          "minor": 3907,
+          "serious": 1123,
+          "fatal": 16
+        },
+        "4": {
+          "no_injury": 5779,
+          "minor": 3555,
+          "serious": 1033,
+          "fatal": 15
+        },
+        "5": {
+          "no_injury": 6275,
+          "minor": 4080,
+          "serious": 1220,
+          "fatal": 12
+        },
+        "6": {
+          "no_injury": 6286,
+          "minor": 4354,
+          "serious": 1256,
+          "fatal": 15
+        },
+        "7": {
+          "no_injury": 5859,
+          "minor": 4012,
+          "serious": 1243,
+          "fatal": 23
+        },
+        "8": {
+          "no_injury": 3998,
+          "minor": 2799,
+          "serious": 827,
+          "fatal": 13
+        },
+        "9": {
+          "no_injury": 6265,
+          "minor": 4159,
+          "serious": 1236,
+          "fatal": 14
+        },
+        "10": {
+          "no_injury": 7250,
+          "minor": 4811,
+          "serious": 1457,
+          "fatal": 14
+        },
+        "11": {
+          "no_injury": 7116,
+          "minor": 4603,
+          "serious": 1304,
+          "fatal": 19
+        },
+        "12": {
+          "no_injury": 7278,
+          "minor": 4268,
+          "serious": 1272,
+          "fatal": 27
+        }
+      },
+      "shares": {
+        "1": {
+          "no_injury": 0.5603,
+          "minor": 0.3421,
+          "serious": 0.0958,
+          "fatal": 0.0018
+        },
+        "2": {
+          "no_injury": 0.5544,
+          "minor": 0.3416,
+          "serious": 0.1026,
+          "fatal": 0.0013
+        },
+        "3": {
+          "no_injury": 0.5601,
+          "minor": 0.3406,
+          "serious": 0.0979,
+          "fatal": 0.0014
+        },
+        "4": {
+          "no_injury": 0.5566,
+          "minor": 0.3424,
+          "serious": 0.0995,
+          "fatal": 0.0014
+        },
+        "5": {
+          "no_injury": 0.5416,
+          "minor": 0.3521,
+          "serious": 0.1053,
+          "fatal": 0.001
+        },
+        "6": {
+          "no_injury": 0.5277,
+          "minor": 0.3655,
+          "serious": 0.1054,
+          "fatal": 0.0013
+        },
+        "7": {
+          "no_injury": 0.5261,
+          "minor": 0.3602,
+          "serious": 0.1116,
+          "fatal": 0.0021
+        },
+        "8": {
+          "no_injury": 0.5235,
+          "minor": 0.3665,
+          "serious": 0.1083,
+          "fatal": 0.0017
+        },
+        "9": {
+          "no_injury": 0.5367,
+          "minor": 0.3563,
+          "serious": 0.1059,
+          "fatal": 0.0012
+        },
+        "10": {
+          "no_injury": 0.5358,
+          "minor": 0.3555,
+          "serious": 0.1077,
+          "fatal": 0.001
+        },
+        "11": {
+          "no_injury": 0.5456,
+          "minor": 0.3529,
+          "serious": 0.1,
+          "fatal": 0.0015
+        },
+        "12": {
+          "no_injury": 0.5666,
+          "minor": 0.3323,
+          "serious": 0.099,
+          "fatal": 0.0021
+        }
+      }
+    },
+    "figure": "reports\\figures\\phase3\\02_temporal_patterns.png"
+  },
+  "categoricals": {
+    "tipo_accidente": {
+      "counts": {
+        "Choque contra obstáculo fijo": {
+          "no_injury": 17597,
+          "minor": 2207,
+          "serious": 774,
+          "fatal": 28
+        },
+        "Alcance": {
+          "no_injury": 15909,
+          "minor": 10917,
+          "serious": 2095,
+          "fatal": 12
+        },
+        "Colisión fronto-lateral": {
+          "no_injury": 15820,
+          "minor": 12255,
+          "serious": 3612,
+          "fatal": 33
+        },
+        "Colisión lateral": {
+          "no_injury": 14520,
+          "minor": 4530,
+          "serious": 1037,
+          "fatal": 6
+        },
+        "Otro": {
+          "no_injury": 3056,
+          "minor": 304,
+          "serious": 61,
+          "fatal": 1
+        },
+        "Colisión múltiple": {
+          "no_injury": 2770,
+          "minor": 1750,
+          "serious": 376,
+          "fatal": 4
+        },
+        "Colisión frontal": {
+          "no_injury": 1606,
+          "minor": 1074,
+          "serious": 338,
+          "fatal": 7
+        },
+        "Caída": {
+          "no_injury": 1477,
+          "minor": 9059,
+          "serious": 2764,
+          "fatal": 22
+        },
+        "Atropello a persona": {
+          "no_injury": 782,
+          "minor": 5458,
+          "serious": 2871,
+          "fatal": 84
+        },
+        "Solo salida de la vía": {
+          "no_injury": 683,
+          "minor": 195,
+          "serious": 92,
+          "fatal": 3
+        }
+      },
+      "shares": {
+        "Choque contra obstáculo fijo": {
+          "no_injury": 0.854,
+          "minor": 0.1071,
+          "serious": 0.0376,
+          "fatal": 0.0014
+        },
+        "Alcance": {
+          "no_injury": 0.5499,
+          "minor": 0.3773,
+          "serious": 0.0724,
+          "fatal": 0.0004
+        },
+        "Colisión fronto-lateral": {
+          "no_injury": 0.4987,
+          "minor": 0.3863,
+          "serious": 0.1139,
+          "fatal": 0.001
+        },
+        "Colisión lateral": {
+          "no_injury": 0.7226,
+          "minor": 0.2255,
+          "serious": 0.0516,
+          "fatal": 0.0003
+        },
+        "Otro": {
+          "no_injury": 0.893,
+          "minor": 0.0888,
+          "serious": 0.0178,
+          "fatal": 0.0003
+        },
+        "Colisión múltiple": {
+          "no_injury": 0.5653,
+          "minor": 0.3571,
+          "serious": 0.0767,
+          "fatal": 0.0008
+        },
+        "Colisión frontal": {
+          "no_injury": 0.5309,
+          "minor": 0.355,
+          "serious": 0.1117,
+          "fatal": 0.0023
+        },
+        "Caída": {
+          "no_injury": 0.1109,
+          "minor": 0.68,
+          "serious": 0.2075,
+          "fatal": 0.0017
+        },
+        "Atropello a persona": {
+          "no_injury": 0.085,
+          "minor": 0.5936,
+          "serious": 0.3122,
+          "fatal": 0.0091
+        },
+        "Solo salida de la vía": {
+          "no_injury": 0.702,
+          "minor": 0.2004,
+          "serious": 0.0946,
+          "fatal": 0.0031
+        }
+      }
+    },
+    "estado_meteorologico": {
+      "counts": {
+        "Despejado": {
+          "no_injury": 48948,
+          "minor": 39839,
+          "serious": 11893,
+          "fatal": 169
+        },
+        "Nublado": {
+          "no_injury": 4224,
+          "minor": 3284,
+          "serious": 1009,
+          "fatal": 19
+        },
+        "Lluvia débil": {
+          "no_injury": 4125,
+          "minor": 3607,
+          "serious": 900,
+          "fatal": 11
+        },
+        "LLuvia intensa": {
+          "no_injury": 922,
+          "minor": 832,
+          "serious": 236,
+          "fatal": 2
+        },
+        "Se desconoce": {
+          "no_injury": 637,
+          "minor": 496,
+          "serious": 116,
+          "fatal": 1
+        },
+        "Nevando": {
+          "no_injury": 69,
+          "minor": 34,
+          "serious": 6,
+          "fatal": 0
+        },
+        "Granizando": {
+          "no_injury": 13,
+          "minor": 12,
+          "serious": 1,
+          "fatal": 0
+        }
+      },
+      "shares": {
+        "Despejado": {
+          "no_injury": 0.4854,
+          "minor": 0.395,
+          "serious": 0.1179,
+          "fatal": 0.0017
+        },
+        "Nublado": {
+          "no_injury": 0.4948,
+          "minor": 0.3847,
+          "serious": 0.1182,
+          "fatal": 0.0022
+        },
+        "Lluvia débil": {
+          "no_injury": 0.4773,
+          "minor": 0.4173,
+          "serious": 0.1041,
+          "fatal": 0.0013
+        },
+        "LLuvia intensa": {
+          "no_injury": 0.4629,
+          "minor": 0.4177,
+          "serious": 0.1185,
+          "fatal": 0.001
+        },
+        "Se desconoce": {
+          "no_injury": 0.5096,
+          "minor": 0.3968,
+          "serious": 0.0928,
+          "fatal": 0.0008
+        },
+        "Nevando": {
+          "no_injury": 0.633,
+          "minor": 0.3119,
+          "serious": 0.055,
+          "fatal": 0.0
+        },
+        "Granizando": {
+          "no_injury": 0.5,
+          "minor": 0.4615,
+          "serious": 0.0385,
+          "fatal": 0.0
+        }
+      }
+    },
+    "figure": "reports\\figures\\phase3\\03_categorical_severity.png"
+  },
+  "districts": {
+    "per_district": {
+      "ARGANZUELA": {
+        "no_injury": 3305,
+        "minor": 2470,
+        "serious": 579,
+        "fatal": 9,
+        "injury_rate": 0.4806
+      },
+      "BARAJAS": {
+        "no_injury": 1680,
+        "minor": 735,
+        "serious": 235,
+        "fatal": 3,
+        "injury_rate": 0.3668
+      },
+      "CARABANCHEL": {
+        "no_injury": 4876,
+        "minor": 3135,
+        "serious": 832,
+        "fatal": 5,
+        "injury_rate": 0.4489
+      },
+      "CENTRO": {
+        "no_injury": 4242,
+        "minor": 3072,
+        "serious": 898,
+        "fatal": 15,
+        "injury_rate": 0.4844
+      },
+      "CHAMARTÍN": {
+        "no_injury": 5084,
+        "minor": 3513,
+        "serious": 836,
+        "fatal": 12,
+        "injury_rate": 0.4617
+      },
+      "CHAMBERÍ": {
+        "no_injury": 3240,
+        "minor": 2600,
+        "serious": 809,
+        "fatal": 10,
+        "injury_rate": 0.5134
+      },
+      "CIUDAD LINEAL": {
+        "no_injury": 4632,
+        "minor": 2987,
+        "serious": 829,
+        "fatal": 16,
+        "injury_rate": 0.4527
+      },
+      "FUENCARRAL-EL PARDO": {
+        "no_injury": 4195,
+        "minor": 2453,
+        "serious": 826,
+        "fatal": 17,
+        "injury_rate": 0.44
+      },
+      "HORTALEZA": {
+        "no_injury": 3140,
+        "minor": 1790,
+        "serious": 585,
+        "fatal": 8,
+        "injury_rate": 0.4315
+      },
+      "LATINA": {
+        "no_injury": 3717,
+        "minor": 2109,
+        "serious": 841,
+        "fatal": 11,
+        "injury_rate": 0.4434
+      },
+      "MONCLOA-ARAVACA": {
+        "no_injury": 4186,
+        "minor": 2443,
+        "serious": 853,
+        "fatal": 17,
+        "injury_rate": 0.4418
+      },
+      "MORATALAZ": {
+        "no_injury": 2107,
+        "minor": 1338,
+        "serious": 358,
+        "fatal": 7,
+        "injury_rate": 0.447
+      },
+      "PUENTE DE VALLECAS": {
+        "no_injury": 6087,
+        "minor": 3012,
+        "serious": 929,
+        "fatal": 13,
+        "injury_rate": 0.3938
+      },
+      "RETIRO": {
+        "no_injury": 3369,
+        "minor": 2495,
+        "serious": 771,
+        "fatal": 9,
+        "injury_rate": 0.4929
+      },
+      "SALAMANCA": {
+        "no_injury": 5141,
+        "minor": 3775,
+        "serious": 1076,
+        "fatal": 9,
+        "injury_rate": 0.486
+      },
+      "SAN BLAS-CANILLEJAS": {
+        "no_injury": 3549,
+        "minor": 2466,
+        "serious": 620,
+        "fatal": 8,
+        "injury_rate": 0.4658
+      },
+      "TETUÁN": {
+        "no_injury": 3258,
+        "minor": 2300,
+        "serious": 704,
+        "fatal": 10,
+        "injury_rate": 0.4805
+      },
+      "USERA": {
+        "no_injury": 3129,
+        "minor": 1733,
+        "serious": 462,
+        "fatal": 9,
+        "injury_rate": 0.4133
+      },
+      "VICÁLVARO": {
+        "no_injury": 1352,
+        "minor": 825,
+        "serious": 275,
+        "fatal": 2,
+        "injury_rate": 0.4491
+      },
+      "VILLA DE VALLECAS": {
+        "no_injury": 2026,
+        "minor": 1365,
+        "serious": 390,
+        "fatal": 4,
+        "injury_rate": 0.4647
+      },
+      "VILLAVERDE": {
+        "no_injury": 2538,
+        "minor": 1489,
+        "serious": 456,
+        "fatal": 8,
+        "injury_rate": 0.4349
+      }
+    },
+    "top10_by_injury_rate": {
+      "CHAMBERÍ": {
+        "no_injury": 3240,
+        "minor": 2600,
+        "serious": 809,
+        "fatal": 10,
+        "injury_rate": 0.5134
+      },
+      "RETIRO": {
+        "no_injury": 3369,
+        "minor": 2495,
+        "serious": 771,
+        "fatal": 9,
+        "injury_rate": 0.4929
+      },
+      "SALAMANCA": {
+        "no_injury": 5141,
+        "minor": 3775,
+        "serious": 1076,
+        "fatal": 9,
+        "injury_rate": 0.486
+      },
+      "CENTRO": {
+        "no_injury": 4242,
+        "minor": 3072,
+        "serious": 898,
+        "fatal": 15,
+        "injury_rate": 0.4844
+      },
+      "ARGANZUELA": {
+        "no_injury": 3305,
+        "minor": 2470,
+        "serious": 579,
+        "fatal": 9,
+        "injury_rate": 0.4806
+      },
+      "TETUÁN": {
+        "no_injury": 3258,
+        "minor": 2300,
+        "serious": 704,
+        "fatal": 10,
+        "injury_rate": 0.4805
+      },
+      "SAN BLAS-CANILLEJAS": {
+        "no_injury": 3549,
+        "minor": 2466,
+        "serious": 620,
+        "fatal": 8,
+        "injury_rate": 0.4658
+      },
+      "VILLA DE VALLECAS": {
+        "no_injury": 2026,
+        "minor": 1365,
+        "serious": 390,
+        "fatal": 4,
+        "injury_rate": 0.4647
+      },
+      "CHAMARTÍN": {
+        "no_injury": 5084,
+        "minor": 3513,
+        "serious": 836,
+        "fatal": 12,
+        "injury_rate": 0.4617
+      },
+      "CIUDAD LINEAL": {
+        "no_injury": 4632,
+        "minor": 2987,
+        "serious": 829,
+        "fatal": 16,
+        "injury_rate": 0.4527
+      }
+    }
+  },
+  "feature_candidates": {
+    "year": {
+      "dtype": "Int64",
+      "n_missing": 0,
+      "missing_share": 0.0,
+      "n_unique": 7,
+      "is_categorical": false
+    },
+    "hour": {
+      "dtype": "Int8",
+      "n_missing": 0,
+      "missing_share": 0.0,
+      "n_unique": 24,
+      "is_categorical": false
+    },
+    "localizacion": {
+      "dtype": "str",
+      "n_missing": 1,
+      "missing_share": 0.0,
+      "n_unique": 64041,
+      "is_categorical": false
+    },
+    "cod_distrito": {
+      "dtype": "float64",
+      "n_missing": 4,
+      "missing_share": 0.0,
+      "n_unique": 21,
+      "is_categorical": false
+    },
+    "distrito": {
+      "dtype": "str",
+      "n_missing": 4,
+      "missing_share": 0.0,
+      "n_unique": 21,
+      "is_categorical": false
+    },
+    "coordenada_x_utm": {
+      "dtype": "float64",
+      "n_missing": 33,
+      "missing_share": 0.0002,
+      "n_unique": 17993,
+      "is_categorical": false
+    },
+    "coordenada_y_utm": {
+      "dtype": "float64",
+      "n_missing": 33,
+      "missing_share": 0.0002,
+      "n_unique": 18439,
+      "is_categorical": false
+    },
+    "tipo_accidente": {
+      "dtype": "str",
+      "n_missing": 4,
+      "missing_share": 0.0,
+      "n_unique": 13,
+      "is_categorical": false
+    },
+    "estado_meteorologico": {
+      "dtype": "str",
+      "n_missing": 15923,
+      "missing_share": 0.1159,
+      "n_unique": 7,
+      "is_categorical": false
+    },
+    "n_people": {
+      "dtype": "int64",
+      "n_missing": 0,
+      "missing_share": 0.0,
+      "n_unique": 26,
+      "is_categorical": false
+    },
+    "n_vehicles": {
+      "dtype": "int64",
+      "n_missing": 0,
+      "missing_share": 0.0,
+      "n_unique": 7,
+      "is_categorical": false
+    },
+    "n_conductores": {
+      "dtype": "int64",
+      "n_missing": 0,
+      "missing_share": 0.0,
+      "n_unique": 20,
+      "is_categorical": false
+    },
+    "n_pasajeros": {
+      "dtype": "int64",
+      "n_missing": 0,
+      "missing_share": 0.0,
+      "n_unique": 21,
+      "is_categorical": false
+    },
+    "n_peatones": {
+      "dtype": "int64",
+      "n_missing": 0,
+      "missing_share": 0.0,
+      "n_unique": 8,
+      "is_categorical": false
+    },
+    "has_bicycle": {
+      "dtype": "bool",
+      "n_missing": 0,
+      "missing_share": 0.0,
+      "n_unique": 2,
+      "is_categorical": true
+    },
+    "has_motorcycle": {
+      "dtype": "bool",
+      "n_missing": 0,
+      "missing_share": 0.0,
+      "n_unique": 2,
+      "is_categorical": true
+    },
+    "has_heavy_vehicle": {
+      "dtype": "bool",
+      "n_missing": 0,
+      "missing_share": 0.0,
+      "n_unique": 2,
+      "is_categorical": true
+    },
+    "has_pedestrian": {
+      "dtype": "bool",
+      "n_missing": 0,
+      "missing_share": 0.0,
+      "n_unique": 2,
+      "is_categorical": true
+    }
+  },
+  "leakage": {
+    "n_fatalities": {
+      "spearman_with_severity_code": 0.074,
+      "n": 137328
+    },
+    "n_serious": {
+      "spearman_with_severity_code": 0.59,
+      "n": 137328
+    },
+    "n_minor": {
+      "spearman_with_severity_code": 0.654,
+      "n": 137328
+    },
+    "any_alcohol_positive": {
+      "spearman_with_severity_code": -0.056,
+      "n": 137328
+    },
+    "n_alcohol_positive": {
+      "spearman_with_severity_code": -0.056,
+      "n": 137328
+    },
+    "any_drug_positive": {
+      "spearman_with_severity_code": 0.061,
+      "n": 137328
+    },
+    "worst_lesividad_code": {
+      "spearman_with_severity_code": 0.429,
+      "n": 137328
+    }
+  }
+}

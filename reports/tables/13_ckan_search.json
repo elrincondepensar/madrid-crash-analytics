@@ -1,0 +1,215 @@
+[
+  {
+    "query": "tramos via geometria",
+    "n_hits": 2,
+    "hits": [
+      {
+        "name": "212422-0-trafico-calle30-planificados",
+        "title": "Tráfico Calle 30. Trabajos planificados en tiempo real",
+        "n_resources": 2,
+        "formats": [
+          "PDF",
+          "XML"
+        ]
+      },
+      {
+        "name": "300202-0-calle30-planificados-historico",
+        "title": "Tráfico Calle 30. Histórico de trabajos planificados",
+        "n_resources": 21,
+        "formats": [
+          "CSV",
+          "PDF",
+          "XLSX"
+        ]
+      }
+    ]
+  },
+  {
+    "query": "segmentos viarios",
+    "n_hits": 0,
+    "hits": []
+  },
+  {
+    "query": "grafo via madrid",
+    "n_hits": 5,
+    "hits": [
+      {
+        "name": "300429-0-camaras-videovigilancia",
+        "title": "Cámaras de videovigilancia en la vía pública de Madrid",
+        "n_resources": 3,
+        "formats": [
+          "CSV",
+          "PDF",
+          "XLS"
+        ]
+      },
+      {
+        "name": "202105-0-mercadillos",
+        "title": "Mercadillos en la vía pública",
+        "n_resources": 6,
+        "formats": [
+          "CSV",
+          "GEO",
+          "JSON",
+          "PDF",
+          "RDF",
+          "XML"
+        ]
+      },
+      {
+        "name": "202062-0-trafico-incidencias-viapublica",
+        "title": "Tráfico. Incidencias en vía pública",
+        "n_resources": 2,
+        "formats": [
+          "PDF",
+          "XML"
+        ]
+      },
+      {
+        "name": "208252-0-incidencias-viapublica-mapa",
+        "title": "Tráfico. Incidencias en vía pública. Mapa",
+        "n_resources": 2,
+        "formats": [
+          "KML",
+          "PDF"
+        ]
+      },
+      {
+        "name": "300615-0-situados-aislados",
+        "title": "Relación de situados aislados en vía pública",
+        "n_resources": 9,
+        "formats": [
+          "CSV",
+          "PDF",
+          "XLSX"
+        ]
+      }
+    ]
+  },
+  {
+    "query": "cartografia viaria",
+    "n_hits": 1,
+    "hits": [
+      {
+        "name": "300715-0-ancho-viario-mapas",
+        "title": "Ancho medio de viario",
+        "n_resources": 1,
+        "formats": [
+          "WMS"
+        ]
+      }
+    ]
+  },
+  {
+    "query": "viales shp",
+    "n_hits": 5,
+    "hits": [
+      {
+        "name": "300732-0-mapas-callejero",
+        "title": "Callejero oficial. Geometrías de rotulación de callejero (viales y toponimia)",
+        "n_resources": 1,
+        "formats": [
+          "ZIP"
+        ]
+      },
+      {
+        "name": "300465-0-operacion-asfalto",
+        "title": "Operación Asfalto. Madrid 2020",
+        "n_resources": 1,
+        "formats": [
+          "ZIP"
+        ]
+      },
+      {
+        "name": "300733-0-mapas-callejero-rotulacion",
+        "title": "Callejero oficial. Rotulación del callejero municipal",
+        "n_resources": 2,
+        "formats": [
+          "SHP",
+          "ZIP"
+        ]
+      },
+      {
+        "name": "300625-0-accesibilidad-aceras-mapas",
+        "title": "Accesibilidad y movilidad en aceras y calzadas. Año 2020",
+        "n_resources": 1,
+        "formats": [
+          "ZIP"
+        ]
+      },
+      {
+        "name": "300608-0-accesibilidad-aceras-mapas",
+        "title": "Accesibilidad y movilidad en aceras y calzadas. Año 2021",
+        "n_resources": 1,
+        "formats": [
+          "ZIP"
+        ]
+      }
+    ]
+  },
+  {
+    "query": "malla viaria",
+    "n_hits": 0,
+    "hits": []
+  },
+  {
+    "query": "intensidad trafico tramos",
+    "n_hits": 5,
+    "hits": [
+      {
+        "name": "208223-0-trafico-intensidad-tramas",
+        "title": "Tráfico. Mapa de tramas de intensidad del tráfico",
+        "n_resources": 3,
+        "formats": [
+          "KML",
+          "PDF"
+        ]
+      },
+      {
+        "name": "203962-0-trafico-imd",
+        "title": "Tráfico. Intensidad media diaria anual por tramos",
+        "n_resources": 21,
+        "formats": [
+          "KML",
+          "KMZ",
+          "PDF",
+          "XLS",
+          "XLSX",
+          "ZIP"
+        ]
+      },
+      {
+        "name": "300340-0-trafico-velocidad",
+        "title": "Tráfico. Velocidad media diaria anual por tramos",
+        "n_resources": 13,
+        "formats": [
+          "KML",
+          "PDF",
+          "XLSX",
+          "ZIP"
+        ]
+      },
+      {
+        "name": "205865-0-intensidad-media-laborables",
+        "title": "Tráfico. Intensidad media en días laborables",
+        "n_resources": 7,
+        "formats": [
+          "CSV",
+          "PDF",
+          "XLS",
+          "XLSX"
+        ]
+      },
+      {
+        "name": "300749-0-tuneles-aforos-movilidad-trafico",
+        "title": "Aforos de intensidades de vehículos en túneles urbanos",
+        "n_resources": 4,
+        "formats": [
+          "CSV",
+          "PDF",
+          "XLSX"
+        ]
+      }
+    ]
+  }
+]

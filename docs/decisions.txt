@@ -1,0 +1,2096 @@
+# Registro de decisiones — Madrid Road Safety
+
+## D001 · Uso de la API CKAN para descubrimiento de recursos
+- **Decisión:** obtener las URLs reales de descarga mediante
+  `https://datos.madrid.es/api/3/action/package_show?id={dataset_id}` en lugar de
+  adivinar el patrón `.../egob/catalogo/{id}.csv`.
+- **Alternativas descartadas:** construir URLs por patrón (falló con 404 en la iteración 1);
+  scraping de la página HTML del dataset.
+- **Motivo:** el patrón de URL de descarga no es uniforme entre datasets.
+- **Evidencia:** iteración 2, `reports/tables/01_v2_audit.json` — 17/17 recursos
+  accidentes y 89/89 recursos aforos recuperados vía API.
+- **Supuestos:** la API CKAN está disponible sin autenticación.
+- **Limitaciones:** no funciona para el dataset 208627 (devuelve 0 recursos).
+- **Impacto en fases posteriores:** toda descarga en Fase 2 usa este mecanismo.
+
+## D002 · Detección de encoding por fichero
+- **Decisión:** intentar `utf-8-sig` primero y caer a `latin-1` si falla.
+- **Alternativas descartadas:** fijar `latin-1` globalmente (falla en ficheros nuevos).
+- **Motivo:** los accidentes en formato nuevo son UTF-8 con BOM; los antiguos
+  y algunos de aforos son latin-1. El callejero es latin-1.
+- **Evidencia:** iteración 2 — `ï»¿num_expediente` y `estado_meteorolÃ³gico` en los
+  recursos 1, 2, 3, 5, 8, 11, 33, 34 de accidentes; `FECHA` limpio en 13/14/16/…
+- **Supuestos:** ningún fichero mezcla encodings dentro de sí mismo.
+- **Limitaciones:** si un fichero está en UTF-8 sin BOM y tiene caracteres no-ASCII,
+  puede confundirse con latin-1. Se validará tras la carga.
+- **Impacto:** todas las funciones de carga en `src/madrid_safety/`.
+
+## D003 · Separador de campos `;`
+- **Decisión:** `sep=';'` para todos los CSV del portal.
+- **Motivo:** verificado en iteración 1 (lectura como una sola columna) e iteración 2
+  (parseo correcto en todos los recursos).
+- **Evidencia:** `01_v2_audit.json`, todas las entradas `"status": "ok"` con ≥4 columnas.
+- **Impacto:** centralizado en una única función `read_madrid_csv()`.
+
+## D004 · No cerrar la Fase 1 sin resolver el esquema de accidentes por año
+- **Decisión:** bloquear el cierre hasta mapear qué recurso de accidentes cubre qué año
+  y en qué formato (antiguo sin coordenadas vs nuevo con coordenadas).
+- **Motivo:** sin ese mapeo no se puede construir una serie 2019-2025 homogénea ni
+  decidir la unidad de análisis de la Fase 2.
+- **Evidencia:** iteración 2 — dos esquemas incompatibles entre los 17 recursos.
+- **Impacto:** Fase 2 no comienza sin esta tabla de correspondencia.
+
+## D005 · Exigir fuente de red viaria con geometría de segmento
+- **Decisión:** el callejero 213605 NO es suficiente para líneas B/C/D: solo
+  proporciona viales, direcciones con punto y referencias de inicio/fin, sin geometría
+  de segmento.
+- **Alternativas consideradas:** usar puntos de dirección como proxy (pierde la noción
+  de segmento de calle y rompe KDE/Moran sobre red); usar solo distritos (pierde
+  granularidad).
+- **Motivo:** HDBSCAN, Network KDE y Moran sobre red requieren segmentos con geometría.
+- **Evidencia:** `01_v2_audit.json`, sección `street_directory`.
+- **Limitaciones:** no tenemos aún la fuente alternativa. Candidatos a evaluar:
+  CartoMadrid WFS, IDE del Ayuntamiento, OSM (con control de calidad).
+- **Impacto:** Fase 4 depende de resolver esto. Si no se resuelve, las líneas B y C
+  quedan reducidas a unidades agregadas (distrito/barrio) y hay que documentarlo.
+
+## D006 · Histórico de tráfico: fuente a resolver antes de planificar línea D
+- **Decisión:** no sustituir la fuente ausente por una aproximación. Investigar
+  por qué 208627 devuelve 0 recursos antes de descartarla.
+- **Alternativas consideradas:** ignorar la fuente y usar solo aforos permanentes
+  (reduce drásticamente la exposición); inferir exposición del histórico si aparece.
+- **Motivo:** el histórico es la única fuente con granularidad temporal fina; su ausencia
+  condiciona la viabilidad de la línea D.
+- **Evidencia:** iteración 2 — `traffic_history.resources = []`.
+- **Impacto:** pendiente de verificar en iteración 3.
+
+## D006 (corregido) · Histórico de tráfico: 162 recursos confirmados
+- **Decisión original (iteración 3):** tratar 208627 como perdido por devolver 0 recursos.
+- **Corrección:** la llamada `package_show(208627-0-...)` de la iteración 3 devuelve
+  162 recursos. La iteración 2 falló por timeout del servidor, no por ausencia de datos.
+  Este error invalida la decisión original.
+- **Decisión corregida:** 208627 es una fuente disponible. Su estructura debe
+  caracterizarse en iteración 4 antes de planificar la línea D.
+- **Evidencia:** `02_traffic_history.json`, `attempts[0].n_resources = 162`.
+- **Impacto:** la línea D no se degrada automáticamente a aforos permanentes.
+  Se mantienen ambas fuentes como candidatas.
+
+## D007 · Serie de accidentes 2019–2025 en schema nuevo
+- **Decisión:** el proyecto se restringe a 2019–2025 porque es el único tramo con
+  esquema homogéneo (`num_expediente`, coordenadas UTM, `cod_lesividad`).
+  Los años 2010–2018 (schema antiguo sin coordenadas) quedan fuera del alcance.
+- **Alternativas descartadas:** incluir 2010–2018 armonizando esquemas (perderíamos
+  coordenadas y, con ellas, B, C y D).
+- **Evidencia:** `02_accidents_coverage.json` — cambio de esquema entre recursos
+  300228-13 (2018) y 300228-11 (2019).
+- **Impacto:** Fase 2 carga solo 7 recursos (uno por año) y no necesita armonizar
+  entre schemas. Fase 3 diseña la validación temporal sobre 2019–2025.
+
+## D008 · Aforos permanentes: unidad (estación, sentido)
+- **Decisión:** la unidad de medida de los aforos permanentes es (estación, sentido),
+  no solo estación. El fichero de metadatos 300233-112 tiene 120 filas
+  (60 estaciones × 2 sentidos) y columna `Sentido`.
+- **Alternativas descartadas:** agregar por estación sin distinguir sentido (sumaría
+  flujos opuestos y distorsionaría la exposición por segmento).
+- **Evidencia:** `02_permanent_counts.json`, `metadata[1].n_stations = 120` con
+  columnas `Sentido` y `Orient.`.
+- **Supuestos:** los 60 puntos físicos se miden en dos sentidos independientes.
+- **Limitaciones abiertas:** si algún punto mide más de dos sentidos o tiene sentidos
+  variables en el tiempo, la exposición por segmento necesitará tratamiento específico
+  en Fase 9.
+- **Impacto:** Fase 9 asigna aforo a segmento por (estación, sentido, orientación).
+
+## D009 · Cobertura temporal de la exposición por aforos
+- **Decisión:** la exposición con aforos permanentes se construye para
+  **2019–2024 completo** y **2025 hasta marzo**. No se extiende a 2025-04..2025-12
+  porque no hay datos de aforo.
+- **Alternativas descartadas:** imputar los meses faltantes de 2025 (introduce sesgo
+  no cuantificable); recortar el proyecto a 2019–2024 (pierde la serie 2025 de
+  accidentes, que sí está disponible).
+- **Evidencia:** `02_permanent_counts.json` — todos los meses 2019-01 a 2024-12
+  presentes; 2025 solo 01, 02, 03.
+- **Supuestos:** la no publicación de 2025-04..12 es definitiva (no pendiente de
+  actualización del portal). A verificar antes de publicar el proyecto.
+- **Impacto:** la línea D se evalúa sobre 2019–2024 y, como mucho, primer trimestre
+  de 2025. La línea A sí usa 2019–2025 completo.
+
+## D010 · Fuentes candidatas para red viaria e IMD por segmento
+- **Decisión:** antes de aceptar que no hay red con geometría de segmento, evaluar
+  tres datasets detectados por `package_search`:
+  - `208223-0` Mapa de tramas de intensidad del tráfico (¿segmentos con geometría?)
+  - `203962-0` IMD anual por tramos (¿identificador de trama?)
+  - `202468-0` Ubicación de los puntos de medida (307 recursos — ¿incluye no permanentes?)
+- **Alternativas descartadas:** usar solo distritos/barrios como unidad (degrada B y C);
+  usar solo OSM (requiere validación de calidad que puede no merecer la pena si 208223
+  resuelve el problema).
+- **Motivo:** la unidad natural de las líneas B, C y D es el segmento de la red, y
+  estas tres fuentes podrían proporcionarla junto con exposición.
+- **Evidencia:** `02_road_network.json`, sección `ckan_search`.
+- **Limitaciones abiertas:** no se ha verificado el contenido real de estos datasets;
+  quedan pendientes en iteración 4.
+- **Impacto:** Fase 4 puede desbloquearse sin recurrir a fuentes externas si 208223
+  contiene geometría.
+
+## D008 (corregido) · Unidad de los aforos permanentes
+- **Decisión original (iteración 3):** la unidad es (estación, sentido), 120 filas en
+  metadatos → 60 estaciones × 2 sentidos.
+- **Corrección:** la unidad real es **(FDIA, FEST, FSEN)**. `FSEN` toma 4 valores
+  distintos (`1-`, `1=`, `2-`, `2=`), no 2. Un mes de 31 días con 59 estaciones
+  produce 7.316 filas = 59 × 4 × 31. La columna `Sentido` del fichero de metadatos
+  colapsa la información; el código de `FSEN` distingue 4 submedidas por estación.
+- **Evidencia:** `04_count_units.json`, `normal.FSEN_values = ["1-","1=","2-","2="]`
+  y `normal.row_per_date = 236 = 59 × 4`.
+- **Supuestos:** la semántica exacta de `-` vs `=` y `1` vs `2` debe confirmarse
+  contra el fichero de metadatos (probablemente "sentido" y "tipo de vía/calzada").
+- **Impacto:** Fase 9 explota `FSEN` como dimensión, no lo agrega. La exposición por
+  segmento se construye con las 4 submedidas separadas y se suman solo tras verificar
+  que representan el mismo flujo físico en la misma dirección.
+
+## D011 · Histórico de tráfico (208627) en formato ZIP
+- **Decisión:** 208627 se distribuye como 162 ZIP, no como CSV directo. La carga
+  requiere descarga + descompresión + lectura del CSV interno.
+- **Evidencia:** `04_history_208627.json` — los tres recursos muestreados son `.zip`.
+- **Limitaciones abiertas:** no se conoce el contenido ni el schema de los ZIP.
+  Puede ser por mes, por punto o por trama. Se resuelve en iteración 5.
+- **Impacto:** si aporta exposición por punto/trama, la línea D puede usar
+  granularidad temporal fina; si no, se restringe a 300233.
+
+## D012 · Fuentes candidatas de red con geometría
+- **Decisión:** `208223` (KML) y `203962` (KMZ/XLS) son las candidatas prioritarias
+  para geometría de segmento. Ninguna es CSV; ambas requieren lectura de formatos
+  geoespaciales (KML/KMZ) con parser XML.
+- **Evidencia:** `04_tramas_208223.json` (2 KML + 1 PDF) y `04_imd_203962.json`
+  (XLSX/XLS/KMZ/ZIP).
+- **Limitaciones:** no verificado que los KML/KMZ tengan identificador de trama
+  estable y geometría de línea; puede que solo tengan puntos o polígonos agregados.
+- **Impacto:** si 208223 tiene líneas con ID, se convierte en la red base del
+  proyecto. Si solo tiene puntos, no sirve para Network KDE ni Moran sobre red.
+
+## D013 · 202468 como fuente de puntos de medida ampliada
+- **Decisión:** evaluar 202468 como fuente de exposición complementaria a 300233.
+  El schema incluye `tipo_elem, id, cod_cent, utm_x, utm_y, latitud, longitud`
+  y 307 recursos, lo que sugiere inventarios mensuales con muchos tipos de punto.
+- **Evidencia:** `04_points_202468.json`.
+- **Limitaciones:** falta ver cuántos puntos por tipo y si tienen datos de intensidad
+  asociados o solo ubicación.
+- **Impacto:** si amplía la cobertura, la Fase 9 puede modelar exposición en más
+  segmentos que los 60 de 300233.
+
+## D014 · Bloqueo por anomalía en 300233-3 (dic-2024)
+- **Decisión:** el fichero `300233-3` (dic-2024) tiene 1.044.731 filas = 33.701/día
+  vs. 236/día esperadas. Es una anomalía ~143×. **Bloquea el cierre de la Fase 1**
+  porque no sabemos si la unidad de los datos cambia a partir de ese mes.
+- **Evidencia:** `04_count_units.json`, `anomalous_fdia.row_per_date = 33701`.
+- **Supuestos:** es un fichero espurio y no refleja un cambio real de sistema.
+  A verificar en iteración 5.
+- **Impacto:** si el cambio es sistemático (nuevo sistema de conteo desde dic-2024),
+  toda la Fase 9 debe tratar 2024-12 en adelante como régimen distinto. Si es un
+  fichero corrupto, se excluye y se documenta.
+
+
+## D015 · Convención de numeración de scripts y salidas
+- **Decisión:** el número del script `NN_nombre.py` es el mismo que el de sus
+  ficheros de salida `NN_*` en `reports/` y `reports/tables/`.
+- **Evidencia:** las iteraciones 2, 3 y 4 rompieron esta convención
+  (scripts 02/03/04 con salidas 02/04/05). Corregido en la iteración 5
+  (script 04 con salidas 04_*).
+- **Impacto:** ninguna decisión metodológica afectada; solo trazabilidad.
+
+## D016 · 208627 histórico: fuente usable pero cobertura a verificar
+- **Decisión:** 208627 se mantiene como fuente candidata de exposición.
+  Un ZIP = un mes. CSV interno con granularidad de 15 min, columnas
+  `id, fecha, tipo_elem, intensidad, ocupacion, carga, vmed, error,
+  periodo_integracion`. En la muestra, `tipo_elem = "M30"`.
+- **Evidencia:** `04_history_208627_zip.json`.
+- **Limitaciones abiertas:** no sabemos si `tipo_elem` incluye vías urbanas
+  además de M30. Se investigará al abrir Fase 9.
+- **Impacto:** si solo cubre M30, la exposición city-wide debe apoyarse en
+  300233 (60 estaciones) y 203962 (IMD anual por ~1961 puntos).
+
+## D017 · 203962 IMD: tabla anual por punto, no segmentos
+- **Decisión:** 203962 no proporciona geometría de segmento. El KMZ son
+  1.961 puntos. Se conserva como fuente de **IMD anual por punto**, útil
+  para SPF en Fase 10, no para Network KDE ni Moran sobre red.
+- **Evidencia:** `04_imd_203962.json` (`geometry_types = ["Point"]`).
+- **Limitaciones:** el XLSX con atributos tabulares no se ha cargado aún
+  (falta `openpyxl`); puede contener un identificador de trama que permita
+  emparejarlo con otra red.
+- **Impacto:** la red de segmentos sigue sin fuente confirmada. Fase 4
+  deberá resolverlo (208223 en crudo, OSM, u otra vía).
+
+## D018 · Anomalía 300233-3 (dic-2024): error de publicación corregible
+- **Decisión:** el fichero de dic-2024 contiene la tabla esperada
+  (7.316 filas = 236 × 31) más ~1.037.415 filas con `FSEN` vacío. Se corrige
+  con `dropna(subset=["FSEN"])` en la carga; no se descarta el fichero.
+- **Evidencia:** `04_dec2024_anomaly.json` — `n_keys = 7316` con `max = 1`
+  consistente solo si la mayoría de filas tiene `FSEN = NaN`.
+- **Impacto:** la Fase 9 carga `300233-3` con este filtrado y lo documenta
+  como incidencia conocida. Si aparece el mismo patrón en otros ficheros,
+  se aplica la misma regla.
+
+## D019 · 202468 pendiente de parseo, no invalida su uso potencial
+- **Decisión:** 202468 (ubicación de puntos de medida) se mantiene como
+  fuente candidata. Los fallos de parseo detectados son de separador
+  (probablemente tab/espacios) y encoding (latin-1), no de contenido.
+- **Evidencia:** `04_points_202468.json`.
+- **Limitaciones abiertas:** falta reparsearlo y ver la distribución de
+  `tipo_elem` (¿incluye aforos no permanentes?).
+- **Impacto:** Fase 9 lo reexplora con parser robusto. Puede ampliar la
+  exposición más allá de las 60 estaciones permanentes.
+
+## D020 · Cierre de Fase 1 con limitaciones documentadas
+- **Decisión:** cerrar la Fase 1 aceptando que las siguientes cuestiones
+  quedan **abiertas y asignadas** a fases posteriores:
+  - Geometría de segmento (red viaria) → **Fase 4**
+  - Cobertura city-wide de 208627 → **Fase 9**
+  - Ampliación de exposición con 202468 → **Fase 9**
+  - Semántica exacta de `FSEN` (`1-`, `1=`, `2-`, `2=`) → **Fase 9**
+- **Motivo:** el criterio bloqueante D004 está resuelto; la línea A no
+  depende de ninguna de las cuestiones abiertas; el plan del proyecto
+  anticipa el riesgo de inviabilidad de D y lo documenta.
+- **Evidencia:** `04_*.json` y `reports/04_phase1_final.md`.
+- **Consecuencias:**
+  - La **línea A** (Fases 2–5) procede sin restricciones.
+  - La **línea B** (HDBSCAN sobre puntos) sigue siendo viable con solo
+    accidentes. Network KDE de la misma línea queda condicionado a Fase 4.
+  - La **línea C** (Moran sobre segmentos) queda condicionada a Fase 4.
+  - La **línea D** (exposición + Poisson/NB) queda condicionada a la
+    resolución de Fase 9.
+- **Impacto en fases posteriores:** Fase 4 comienza revisando 208223 en
+  crudo y, si no resuelve la geometría, evaluando OSM; Fase 9 comienza
+  revisando `tipo_elem` de 208627 y reparando 202468.
+
+## D021 · Serialización uniforme con `dumps_jsonable`
+- **Decisión:** cualquier escritura JSON (informes, tablas, logs) pasa por
+  `madrid_safety.data_audit.dumps_jsonable`, que sanea recursivamente
+  numpy/pandas scalars, `pd.NA`, `pd.NaT`, `NaN`/`Inf` y claves no primitivas.
+- **Motivo:** las agregaciones con `groupby` sobre columnas `Int64` producen
+  claves `np.int64` que `json.dumps` rechaza. Se han producido dos fallos
+  consecutivos por no aplicar el sanea­miento en todos los puntos de escritura.
+- **Evidencia:** errores de `save_json` y, después, de `json.dumps` directo en
+  el informe Markdown del script 05.
+- **Impacto:** prohibido usar `json.dumps` desnudo en scripts del proyecto.
+  Todos los scripts futuros usan `dumps_jsonable`.
+
+## D022 · Target de gravedad: 4 clases ordinales desde `cod_lesividad`
+- **Decisión:** target `severity` con 4 clases ordinales, derivado de la
+  lesividad de la peor víctima del accidente:
+    - 3 `fatal`     ← cod_lesividad 4 (Fallecido 24h)
+    - 2 `serious`   ← cod_lesividad 2 (ingreso ≤24h) o 3 (ingreso >24h)
+    - 1 `minor`     ← cod_lesividad 1, 5, 6, 7 (atención sin ingreso)
+    - 0 `no_injury` ← cod_lesividad 14 (sin asistencia) o NaN en todas
+                       las filas del accidente
+  cod_lesividad 77 ("Se desconoce", 13 accidentes en 7 años) → no_injury
+  para simplicidad, trazable por `cod_lesividad_max == 77`.
+- **Alternativas descartadas:**
+  - Target binario herido/no-herido (pierde la distinción serious/fatal,
+    que es la que tiene valor operativo).
+  - Target 5 clases separando ingreso ≤24h vs >24h (imposible: solo 13
+    accidentes con cod=77, pero cod=3 tiene 3.589 casos; la distinción
+    clínica no es el corte relevante para seguridad vial).
+  - Regresión sobre `cod_lesividad` como ordinal continuo (no es una escala
+    ordinal natural: 4=fallecido rompe el orden 1,2,3,5,6,7,14).
+- **Evidencia:** `05_accidents_diag.json`, crosstab
+  `cod_lesividad × lesividad`; distribución por año en
+  `severity.share_by_year`.
+- **Supuestos:** "peor víctima manda" es el criterio estándar de siniestralidad
+  y coincide con la definición de herido grave en estadísticas oficiales.
+- **Limitaciones:** 45 % de las filas-persona no tienen `cod_lesividad`
+  registrada (personas ilesas o no atendidas). 41,86 % de los accidentes
+  tienen todas las filas con NaN → clasificados `no_injury`. Asumimos que
+  un accidente con heridos siempre tiene al menos una fila con cod 1-7.
+  El cruce `(severity == fatal) ↔ (n_fatalities >= 1)` cuadra, lo que
+  valida el supuesto a nivel agregado.
+- **Impacto:**
+  - Fase 3 analiza la evolución temporal de `severity`.
+  - Fase 5 modela `severity` como clasificación ordinal de 4 clases.
+  - La pérdida de la clase `serious` vs `minor` no compensa la simplicidad
+    de un binario; el proyecto aspira a predecir gravedad con matices.
+
+## D023 · Regla de fuga de información: features vs. leaky vs. target
+- **Decisión:** ninguna variable derivada de `cod_lesividad`,
+  `positiva_alcohol` o `positiva_droga` entra como feature en el modelo
+  de gravedad de Fase 5. Son post-accidente o miden el target.
+- **Alternativas descartadas:**
+  - Incluir `positiva_alcohol` como feature (tentador por su relación
+    conocida con gravedad, pero **se mide después del accidente**; solo
+    es observable en el momento de la predicción si el modelo se usa
+    post-hoc, no preventivamente).
+  - Excluirlas del parquet (perderíamos capacidad de análisis descriptivo
+    y de auditoría del modelo).
+- **Motivo:** el modelo de Fase 5 se plantea como predicción de gravedad
+  a partir de información disponible **en el momento del accidente o antes**
+  (contexto, ubicación, hora, tipo de vía). Alcohol, droga y lesividad
+  son consecuencias del accidente, no predictores.
+- **Evidencia:** `05_accidents_diag.json`, `nulls_by_column` muestra
+  `positiva_droga` con 99,7 % de nulos → además de leaky, inservible.
+- **Impacto:**
+  - En Fase 3 se definirá explícitamente la matriz de features por
+    rol (ver `config.ACCIDENT_COLUMN_ROLES`).
+  - Las columnas quedan en `accidents_clean.parquet` para descriptivo,
+    pero llevan el rol `leakage_alcohol_drug` en la metadata y el código
+    de Fase 5 las excluye por nombre.
+  - `any_drug_positive` (99,7 % nulos) no aporta ni siquiera en análisis
+    descriptivo profundo; solo se usará como control de calidad.
+
+## D024 · Separación `accidents_clean.parquet` / `persons_clean.parquet`
+- **Decisión:** dos tablas procesadas:
+  - `accidents_clean.parquet` — una fila por accidente (137.328 filas).
+  - `persons_clean.parquet` — una fila por persona implicada (322.317 filas).
+- **Motivo:** las líneas del proyecto se analizan a nivel accidente
+  (A: gravedad, B/C: concentraciones espaciales, D: frecuencia). Pero
+  los análisis descriptivos de lesividad por tipo de usuario, alcohol
+  o edad son a nivel persona. Mantener ambas separadas evita que el
+  código de Fase 5 tenga que hacer el join inverso.
+- **Alternativas descartadas:**
+  - Solo `accidents_clean` con listas serializadas en columnas (difícil
+    de consultar, mal para parquet).
+  - Solo `persons_clean` y que cada fase reagrupe (redundancia de cálculo
+    y riesgo de agregaciones inconsistentes).
+- **Evidencia:** estructura confirmada en `05_accidents_diag.json`:
+  2,35 filas/persona de media, 0 colisiones entre años.
+- **Impacto:**
+  - Fase 3 explora `accidents_clean` para el problema predictivo y
+    `persons_clean` para patrones descriptivos.
+  - Fase 4 usa solo `accidents_clean` (necesita coordenadas del accidente).
+  - Fase 9/10 usan solo `accidents_clean` (agregación espacial).
+
+## D025 · Regla de agregación de columnas a nivel accidente
+- **Decisión:** para las columnas que no son naturalmente únicas por
+  accidente, la regla es:
+  - `tipo_accidente`, `estado_meteorologico`, `fecha`, `hora`,
+    `localizacion`, `numero`, `cod_distrito`, `distrito`,
+    `coordenada_x_utm`, `coordenada_y_utm` → `first()` no nulo.
+    Verificado que son uniformes dentro de cada accidente (iteración
+    de diagnóstico).
+  - Variables a nivel persona que se agregan:
+    - `n_people`, `n_vehicles` (nunique de tipo), `n_conductores`,
+      `n_pasajeros`, `n_peatones` → conteos.
+    - `has_bicycle`, `has_motorcycle`, `has_heavy_vehicle`,
+      `has_pedestrian`, `any_alcohol_positive`, `any_drug_positive`
+      → `any()`.
+    - `n_alcohol_positive`, `n_fatalities`, `n_serious`, `n_minor`
+      → `sum()`.
+  - `cod_lesividad_max` → `max()` no nulo (equivale a la peor lesividad).
+- **Evidencia:** `05_accidents_diag.json`, `inconsistent_accidents` con
+  0 accidentes con más de una fecha/localización/x/y.
+- **Impacto:** Fase 3 puede tratar `accidents_clean` como tabla plana.
+
+## D026 · Extracción de `hour` como entero; eliminar `positiva_droga`
+- **Decisión:**
+  - `hora` se conserva como string original. Añadimos `hour` (0–23) extraído
+    con `pd.to_datetime(hora, format="%H:%M:%S", errors="coerce").dt.hour`,
+    con fallback a `%H:%M`. 0 nulos en el diagnóstico.
+  - `positiva_droga` se descarta completamente del parquet final de
+    `accidents_clean` (solo `any_drug_positive` como flag agregado, con
+    99,7 % de nulos, marcada como leakage-only).
+- **Evidencia:** `05_accidents_diag.json`, `nulls_by_column`.
+- **Impacto:** Fase 3 puede codificar `hour` cíclicamente si aporta.
+
+## D027 · Derivación de gravedad: mapping no-ordinal antes del max
+- **Decisión:** la severidad a nivel accidente se deriva aplicando el mapping
+  `cod_lesividad → severity_code` **antes** de agregar (worst victim wins),
+  no aplicando `max()` sobre `cod_lesividad` y mapeando después.
+- **Motivo:** `cod_lesividad` no es ordinal: 14 = "sin asistencia" (severidad 0)
+  y 77 = "se desconoce" tienen valores numéricos altos pero severidad baja.
+  Un `max()` sobre la columna bruta clasifica erróneamente como no-herido
+  cualquier accidente con un ileso + un herido.
+- **Evidencia:** comparación diagnóstico (~202 fatales, 57% no_injury) vs.
+  primer `accidents_clean` (61 fatales, 88% no_injury) en
+  `accidents_clean_validation.json`. Indicador de fallo:
+  `severity_fatal_iff_n_fatalities_ge_1 = false`.
+- **Regla de validación añadida:**
+  - `severity == "fatal"` ⇔ `n_fatalities >= 1` (chequeo estricto).
+  - `severity == "no_injury"` ⇔ `worst_lesividad_code ∈ {-1, 14}`.
+- **Impacto:** `accidents_clean.parquet` regenerado; cualquier script que
+  derive gravedad a nivel accidente debe usar `_worst_lesividad` de
+  `scripts/06_phase2_build_clean.py`, no `max()` sobre `cod_lesividad`.
+
+## D028 · Cierre de Fase 2
+- **Decisión:** cerrar la Fase 2 con las tablas `persons_clean.parquet`
+  (322.317 filas, 34 columnas) y `accidents_clean.parquet`
+  (137.328 filas, 31 columnas) como base analítica de todas las fases.
+- **Criterios superados:**
+  - `n_accidents = 137.328`, `n_persons = 322.317`.
+  - `severity_fatal_iff_n_fatalities_ge_1 = true`.
+  - `severity_no_injury_matches_worst_code = true`.
+  - `sum_n_people_equals_n_persons = true`.
+  - Sin duplicados por `num_expediente`, sin filas fuera de 2019–2025.
+  - Distribución de severidad: no_injury 54,51 %, minor 35,03 %,
+    serious 10,31 %, fatal 0,15 %.
+- **Alternativas descartadas:** ninguna nueva.
+- **Limitaciones abiertas:** `any_drug_positive` (99,7 % nulos) se mantiene
+  en el parquet con rol "leakage-only"; no se usará como feature.
+- **Impacto:** todas las fases posteriores consumen
+  `accidents_clean.parquet` para análisis a nivel accidente y
+  `persons_clean.parquet` para análisis a nivel persona.
+
+## D029 · Momento de predicción M2 (reporte inicial de accidente)
+- **Decisión:** el modelo de gravedad (Fase 5) se plantea en M2: la patrulla
+  llega, clasifica el evento y queremos predecir su severidad para priorizar
+  recursos. En ese momento se conocen las features M2 y no las consecuencias.
+- **Alternativas descartadas:**
+  - **M1 pre-evento** (predicción estructural antes de que ocurra el accidente):
+    es la línea D, no la línea A. Distinto problema.
+  - **M3 post-evento** (incluye alcohol, droga, heridos): métricas altas,
+    utilidad operativa nula, fuga.
+- **Evidencia:** `07_eda.json`, la asociación espuria de alcohol con severidad
+  (`spearman = -0.056`) y el 99,7 % de nulos en `positiva_droga` confirman que
+  esas variables no son features legítimos de M2.
+- **Impacto:** la matriz de features de Fase 5 se restringe a lo observable en M2.
+
+## D030 · Validación temporal de tres vías
+- **Decisión:** train 2019–2022 (74.270 acc.), val 2023 (20.672),
+  test 2024–2025 (42.386).
+- **Alternativas descartadas:**
+  - CV aleatorio 5-fold (fuga temporal).
+  - Train/test 80/20 (sin señal de tuning).
+  - Excluir 2020 del train (rompe representatividad; el EDA muestra que
+    la composición de severidad no cambia significativamente en 2020).
+- **Evidencia:** `07_eda.json`, `covid_rupture`: `serious_or_fatal_rate`
+  10,78 % → 10,82 % → 10,24 %.
+- **Limitación abierta:** 24 fatales en val pueden hacer el tuning ruidoso.
+  Si la desviación entre folds > 10 %, se cambia a val = 2023+2024.
+- **Impacto:** `data/processed/splits.parquet` fija estos índices; todas las
+  fases posteriores lo cargan y respetan.
+
+## D031 · Matriz de features M2 de Fase 5 (provisional)
+- **Decisión:** columnas utilizables en Fase 5, por rol:
+  - Features numéricas: `hour_sin`, `hour_cos`, `month_sin`, `month_cos`,
+    `n_people`, `n_vehicles`, `n_conductores`, `n_pasajeros`, `n_peatones`,
+    `coordenada_x_utm`, `coordenada_y_utm`.
+  - Features booleanas: `has_bicycle`, `has_motorcycle`, `has_heavy_vehicle`,
+    `has_pedestrian`.
+  - Features categóricas: `tipo_accidente`, `estado_meteorologico`, `distrito`.
+  - Excluidas por fuga: `n_fatalities`, `n_serious`, `n_minor`,
+    `any_alcohol_positive`, `n_alcohol_positive`, `any_drug_positive`,
+    `cod_lesividad_max`, `worst_lesividad_code`, `severity`, `severity_code`.
+  - Excluidas por cardinalidad: `localizacion`.
+  - Excluidas por drift: `year`.
+- **Alternativas descartadas:** incluir `localizacion` con target encoding
+  queda pendiente de evaluación en Fase 5 si las categorías aportan.
+- **Evidencia:** `07_eda.json`, EDA muestra que `hour` y `tipo_accidente`
+  son las señales más fuertes; coords y distrito son presumiblemente
+  relevantes por su relación con la red viaria.
+- **Impacto:** Fase 5 implementa la codificación sobre esta base; baseline
+  de la iteración 2 usa un subconjunto minimalista.
+
+## D032 · Métricas de evaluación
+- **Decisión:** métricas principales en Fase 5:
+  - F1-macro (4 clases).
+  - Balanced accuracy.
+  - Cohen's kappa ponderado cuadrático.
+  - MAE ordinal (`mean |severity_code - pred|`).
+  - Per-class recall.
+  - PR-AUC (binario fatal vs no fatal).
+  - Intervalos bootstrap 95 % (500 remuestreos) para F1-macro y PR-AUC(fatal).
+- **Alternativas descartadas:** accuracy (88 % baseline trivial), AUC-ROC
+  multiclass (insensible a fatal por desbalance extremo).
+- **Regla de oro:** diferencia < 0,02 en F1-macro se considera empate salvo
+  intervalos bootstrap disjuntos; en empate se prefiere el modelo más simple.
+- **Impacto:** todas las evaluaciones de Fase 5 siguen este protocolo.
+
+## D033 · Tratamiento de la ordinalidad
+- **Decisión:** se compararán dos enfoques en Fase 5:
+  - Regresión logística ordinal (logit acumulado).
+  - Multiclase independiente (LR, RF, LGBM, CatBoost).
+  Las métricas principal (kappa ponderado + MAE ordinal) premian el respeto
+  al orden. La decisión final se toma con resultados.
+- **Alternativas descartadas:** regresión continua truncada (el target no
+  es continuo, es una escala cualitativa).
+- **Impacto:** Fase 5 implementa ambos enfoques y los compara.
+
+## D034 · Persistencia de los splits
+- **Decisión:** `data/processed/splits.parquet` (columnas: `num_expediente`,
+  `year`, `severity`, `severity_code`, `split`) es la fuente única de splits.
+  Cualquier cambio invalida los resultados y obliga a re-ejecutar todas
+  las fases posteriores.
+- **Evidencia:** iteración 2 de Fase 3.
+- **Impacto:** scripts de Fase 5, 10 y 11 cargan este archivo y verifican
+  que los índices coinciden.
+
+## D035 · Tratamiento de valores nulos en features categóricas
+- **Decisión:**
+  - `estado_meteorologico`: `fillna("Se desconoce")`, merging NaN con la
+    categoría existente homónima. Ambas significan "sin información útil".
+  - `tipo_accidente`: `fillna("Desconocido")`, nueva categoría. Se conserva
+    separada de "Otro" porque en M2 podría ser un tipo no clasificado todavía.
+  - `distrito`: `fillna("DESCONOCIDO")` (aunque no se usa en baseline; se
+    documenta para Fase 5).
+- **Evidencia:** `07_eda.json`, `feature_candidates` muestra 4 nulos en
+  `tipo_accidente` y 4 en `distrito`, 15.923 en `estado_meteorologico`.
+- **Impacto:** consistente con D031.
+
+## D036 · Baseline 1: LR multinomial con/sin class_weight balanceado
+- **Decisión:** para la iteración 2 se entrenarán dos variantes de baseline 1:
+  - 1a: `class_weight='balanced'`.
+  - 1b: sin reweighting.
+  Se reportarán ambas y se decidirá cuál usar como "baseline 1" en función
+  del trade-off entre F1-macro y PR-AUC(fatal).
+- **Motivo:** `balanced` compensa el desbalance extremo de fatal (0,15 %)
+  pero multiplica los falsos positivos; sin pesos, LR colapsa a `no_injury`.
+  Ver el trade-off empíricamente antes de fijar la referencia.
+- **Evidencia:** pendiente de esta iteración.
+- **Impacto:** Fase 5 deberá superar esta referencia con features adicionales,
+  codificación más rica o mejor tratamiento del desbalance.
+
+## D037 · Baseline 1 para Fase 5: LR unweighted + calibración + threshold tuning
+- **Decisión:** el baseline formal de Fase 5 es una LR multinomial sobre
+  features M2 sin `class_weight='balanced'`, seguida de calibración isotonic
+  (o sigmoid) ajustada en val y threshold tuning por clase también en val.
+- **Motivo:** los dos LRs de la iteración 2 mostraron un trade-off claro:
+  `balanced` gana en recall fatal pero pierde PR-AUC(fatal) y kappa;
+  `unweighted` gana en ranking y ordinalidad pero no predice fatal a umbral 0.5.
+  La combinación de ambos resuelve el trade-off.
+- **Evidencia:** `09_baselines.json` — B1a: f1_macro 0,374, kappa 0,447,
+  PR-AUC(fatal) 0,0076. B1b: f1_macro 0,364, kappa 0,505, PR-AUC(fatal) 0,0095.
+  CIs de F1-macro disjuntos entre sí; CIs de PR-AUC(fatal) se solapan.
+- **Impacto:** Fase 5 implementa `CalibratedClassifierCV(method='isotonic')` +
+  búsqueda de thresholds (uno por clase, en val) que maximizan kappa
+  cuadrático (o una combinación kappa + recall(fatal)).
+- **Alternativas descartadas:**
+  - Mantener `class_weight='balanced'` como baseline (pierde ranking).
+  - Sample weights intermedios tipo sqrt-inverse (a explorar en Fase 5,
+    no baseline).
+
+## D038 · `class_weight='balanced'` degrada PR-AUC en clases extremas
+- **Decisión:** no usar `class_weight='balanced'` como configuración de
+  referencia en Fase 5; solo como escenario a comparar.
+- **Motivo:** en B1a el reweighting inverso eleva el recall fatal pero
+  desordena el ranking probabilístico, perdiendo PR-AUC(fatal) frente a B1b.
+  Es un efecto documentado del reweighting severo en clases con <1 % de
+  prevalencia.
+- **Evidencia:** `09_baselines.json` — B1a PR-AUC(fatal) 0,0076 vs B1b 0,0095.
+- **Impacto:** Fase 5 explora `class_weight` moderado (sqrt-inverse) solo
+  si la calibración + threshold tuning no bastan.
+
+## D039 · Fatal es difícil con M2; el techo esperado es modesto
+- **Decisión:** establecer expectativas realistas para Fase 5. Objetivo de
+  PR-AUC(fatal) en test: **≥ 0,03**; <0,03 se considera fracaso del feature
+  set y motiva reabrir la ingeniería de features (p. ej., densidad de
+  accidentes por segmento, tipo de vía).
+- **Motivo:** B1b (mejor ranking) alcanza 0,0095 (6× tasa base). Con features
+  más ricas debería subir, pero la clase es <0,15 % y depende de detalles
+  no capturados por M2.
+- **Evidencia:** `09_baselines.json`, PR-AUC(fatal) CI [0,0065, 0,0147] en B1b.
+- **Impacto:** Fase 5 evalúa el modelo contra este umbral; si no lo supera,
+  reabrimos Fase 4 (features de red) antes de Fase 5.
+
+## D040 · GridSearchCV con validación temporal (LeaveOneGroupOut)
+- **Decisión:** todo `GridSearchCV` sobre datos temporales usa
+  `LeaveOneGroupOut` con `groups = year`, no KFold aleatorio.
+- **Motivo:** KFold aleatorio mezcla años entre train y val de cada fold,
+  produciendo estimaciones optimistas del rendimiento real.
+- **Evidencia:** la Fase 3 usa splits temporales estrictos; el tuning interno
+  del train debe seguir el mismo principio.
+- **Impacto:** Fase 5 también usará `LeaveOneGroupOut` sobre los años del train.
+
+## D041 · PR-AUC multiclase añadido, PR-AUC(fatal) conservado
+- **Decisión:** reportar tres variantes de PR-AUC:
+  - `pr_auc_fatal` (one-vs-rest, clase fatal): señal operativa.
+  - `pr_auc_macro` (macro del AP one-vs-rest por clase): señal agregada.
+  - `roc_auc_macro` (ovr, macro): para comparación externa.
+- **Motivo:** el PR-AUC multiclase a secas oculta la dificultad específica
+  de fatal; el PR-AUC(fatal) a secas oculta el comportamiento en minor/serious.
+  Ambas visiones son necesarias.
+- **Impacto:** Fase 5 reporta las tres variantes y usa `pr_auc_fatal` como
+  criterio de éxito (D039).
+
+## D042 · Ablación features vs. tuning antes de Fase 5
+- **Decisión:** antes de diseñar Fase 5, medir el salto por separado de
+  (a) añadir features D031 completas y (b) tuning de hiperparámetros.
+- **Motivo:** si el salto de features >> salto de tuning, el cuello de botella
+  está en la ingeniería y Fase 5 debe centrarse ahí. Si es al revés, el
+  baseline estaba infra-ajustado y Fase 5 puede exprimir más de lo mismo.
+- **Impacto:** los resultados de esta iteración fijan el orden de prioridades
+  para Fase 5.
+
+## D043 · Imputación de coordenadas ausentes con mediana + indicador
+- **Decisión:** las 33 filas de accidentes sin coordenadas UTM se imputan
+  con la mediana de train, y se añade una columna `coordenada_x_utm_missing`
+  y `coordenada_y_utm_missing` (vía `SimpleImputer(add_indicator=True)`).
+- **Alternativas descartadas:**
+  - Drop de esas 33 filas (rompe la consistencia con M1/M3).
+  - Imputación por distrito (over-engineering para 0,02 % de casos).
+- **Motivo:** `LogisticRegression` rechaza NaN. La mediana es robusta y el
+  indicador de ausencia es información legítima disponible en M2.
+- **Evidencia:** `09_accidents_clean_validation.json`, `n_missing_coords = 33`.
+- **Impacto:** el `ColumnTransformer` de Fase 5 incluye este pipeline numérico.
+
+## D045 · LR con class_weight=None gana el tuning sobre train
+- **Decisión:** el `GridSearchCV` de la ablación confirma empíricamente que
+  `class_weight='balanced'` NO es la mejor configuración sobre train, ni para
+  features mínimas ni para completas. Ambas ramas eligen `class_weight=None`.
+- **Evidencia:** `reports/tables/10_baselines_tuned.json`,
+  `M3_minimal_tuned.best_params.class_weight == None` y
+  `M4_full_tuned.best_params.class_weight == None`.
+- **Motivo:** con 4 clases y 0,15 % de fatal, el reweighting inverso degrada
+  más de lo que aporta. Kappa cuadrático, la métrica de tuning, penaliza
+  especialmente el colapso de no_injury y minor hacia fatal, que es
+  justo lo que hace `class_weight='balanced'`.
+- **Impacto:** Fase 5 no usa `class_weight='balanced'` como default. Se
+  explorará en el espacio de búsqueda junto con `class_weight` moderados
+  (sqrt-inverse, custom) para ver si aportan. La calibración + threshold
+  tuning (D037) se mantiene como estrategia principal para fatal.
+
+## D048 · Calibración sobre modelo prefit vía `FrozenEstimator`
+- **Decisión:** para calibrar un modelo ya entrenado (fit en train, calibrado
+  en val) se usa `CalibratedClassifierCV(FrozenEstimator(estimator), method=...)`,
+  no `cv="prefit"`.
+- **Motivo:** `cv="prefit"` fue deprecado en sklearn 1.6 y eliminado en 1.7.
+  `FrozenEstimator` es el reemplazo oficial y convive con `cv=None` (default).
+- **Evidencia:** `InvalidParameterError: The 'cv' parameter of
+  CalibratedClassifierCV must be ... Got 'prefit' instead` al ejecutar el
+  script 11.
+- **Impacto:** extiende la restricción de D044 al módulo `calibration`. Fase 5
+  aplica el mismo patrón para calibrar LGBM/CatBoost sobre val.
+
+## D049 · Cierre de Fase 3 con conclusión negativa sobre fatal
+- **Decisión:** la Fase 3 se cierra con la conclusión de que las features M2
+  (incluso las completas de D031) NO producen un clasificador operativo para
+  fatal. El baseline queda registrado con kappa 0,512 y recall_fatal = 0.
+- **Evidencia:**
+  - `10_baselines_tuned.json` — M1–M4 recall_fatal = 0 en test.
+  - `11_threshold_tuning.json` — cost-sensitive colapsa a serious
+    (recall_serious 0,95 con precisión 12 %); sweep de umbral sobre fatal
+    no encuentra ningún punto con precisión > 2 % y recall > 5 %;
+    pr_auc_fatal calibrada 0,008 (5× tasa base, insuficiente para triage).
+- **Motivo:** la distinción fatal vs serious no está en el "qué/cuándo/dónde"
+  de M2. Está en factores no capturados: tipo y velocidad de vía, histórico
+  del segmento, exposición, condiciones no post-accidente.
+- **Alternativas descartadas:**
+  - Reintentar con matrices de coste optimizadas en val (el problema no es
+    la matriz, es la falta de señal).
+  - Añadir features M3 post-accidente (fuga, rechazado en D023).
+- **Impacto:** Fase 4 es prerequisito de Fase 5 si se mantienen las 4 clases.
+
+## D050 · Fase 4 antes que Fase 5 (decisión firme)
+- **Decisión:** Fase 4 (geometría y red viaria) se ejecuta antes que Fase 5.
+  Fase 5 se diseña con las features adicionales de Fase 4.
+- **Alternativas consideradas:**
+  - **Opción A** (reducir a 3 clases: no_injury / minor / grave): produce un
+    clasificador operativo con M2 pero sacrifica fatal. Razonable si el
+    tiempo aprieta; no es la primera elección.
+  - **Opción B** (mantener 4 clases con M2 y aceptar fatal no predecible):
+    honesto pero limitado; no justifica el esfuerzo de Fase 5.
+  - **Opción C** (posponer Fase 5 tras Fase 4): mantiene las 4 clases y
+    respeta el orden del plan original. **Elegida.**
+- **Evidencia:** D049.
+- **Impacto:**
+  - Fase 5 arranca con features de Fase 4 y decide con los datos nuevos si
+    las 4 clases siguen siendo viables o si hay que caer a Opción A.
+  - El baseline de Fase 5 es M4 + features de Fase 4, no M4 puro.
+  - El cost-sensitive con matriz arbitraria queda archivado hasta poder
+    optimizarlo sobre val con features más ricas.
+
+## D051 · Calibración isotónica con muestras pequeñas degrada el ranking
+- **Decisión:** con < 50 muestras de la clase en val, la calibración isotónica
+  puede degradar el ranking. Preferir sigmoid (Platt) o añadir más datos de
+  calibración.
+- **Evidencia:** `11_threshold_tuning.json` — pr_auc_fatal calibrada 0,008
+  vs sin calibrar 0,0093 (isotonic con 24 fatales en val).
+- **Impacto:** Fase 5 usa sigmoid para calibrar fatal, o calibra sobre
+  train+val combinados.
+
+## D052 · Métricas de triage para clases raras
+- **Decisión:** además de las métricas de clasificación (F1-macro, kappa),
+  se reportan **métricas de ranking** para fatal y serious:
+  - Recall@k, Precision@k, Lift@k para k ∈ {1 %, 2 %, 5 %, 10 %, 20 %}.
+  - Average Precision (PR-AUC) por clase (ya calculada).
+  - Expected cost con umbrales optimizados en val.
+- **Motivo:** F1-macro y kappa premian el colapso de las clases raras. El
+  objetivo operativo es priorizar recursos, no clasificar con umbral 0,5.
+- **Evidencia:** `10_baselines_tuned.json` — kappa 0,512 con recall_fatal = 0.
+- **Impacto:** Fase 5 reporta ambas familias. El criterio de éxito para fatal
+  es Lift@5 % ≥ 5 y Recall@5 % ≥ 20 % (ver D056), no F1-macro.
+
+## D053 · Umbrales por clase optimizados en val
+- **Decisión:** los umbrales de decisión se buscan por clase en val, no se
+  fijan a priori. Para cada clase k ∈ {1,2,3} se busca el umbral que maximiza
+  F1(k, one-vs-rest) en val; en test se aplica la regla
+  "si varias clases superan su umbral, se elige la de mayor P(k)/threshold_k;
+  si ninguna, se predice no_injury".
+- **Motivo:** la matriz de costes fija (D049) era arbitraria y produjo un
+  clasificador degenerado.
+- **Evidencia:** `11_threshold_tuning.json` — cost-sensitive con matriz
+  [0.1, 1, 10, 100] colapsa a serious (recall 0,95, precision 0,12).
+- **Impacto:** Fase 5 usa threshold tuning por clase sobre val.
+
+## D054 · Data augmentation para clases raras (SMOTE y variantes)
+- **Decisión:** se prueban 4 variantes de augmentation antes de concluir
+  que el feature set es insuficiente:
+  - baseline (sin augmentation)
+  - SMOTE (synthetic minority oversampling, Chawla 2002)
+  - Borderline-SMOTE (Han 2005)
+  - ADASYN (He 2008)
+- **Motivo:** no probar augmentation estándar antes de declarar el problema
+  inviable es prematuro.
+- **Limitaciones explícitas:**
+  - SMOTE interpola linealmente coordenadas UTM. Puede generar puntos fuera
+    de la ciudad o en zonas sin accidentes reales. Se documenta como
+    limitación; se probará "coords preservadas" (sample from real minority)
+    si el SMOTE plano funciona.
+  - SMOTE se aplica SOLO sobre train (fit en train, transform en train),
+    nunca sobre val ni test, para no contaminar la evaluación.
+  - Con 116 fatales en train, SMOTE con ratio 1:1 vs. mayoritaria generaría
+    ~39.000 sintéticos. Se limita el ratio a 1:10 para evitar sobreajuste.
+- **Impacto:** los resultados deciden si Fase 5 necesita features nuevas
+  (Fase 4) o si el problema era de balance y métricas.
+
+## D049 (corregido) · El baseline M2 tiene señal de ranking útil para fatal
+- **Decisión anterior (incorrecta):** "el feature set M2 no tiene señal
+  operativa para fatal".
+- **Corrección:** con métricas de ranking (Lift@k, Recall@k), el baseline
+  M2 alcanza Lift@2 = 11,3, Lift@5 = 7,4, Recall@5 = 37,1 % y
+  Recall@10 = 50 % en test. Es un sistema de triage útil. La conclusión
+  anterior se basaba en métricas de acuerdo global (F1-macro, kappa) que
+  premian el colapso de clases raras.
+- **Evidencia:** `12_ranking_and_augmentation.json`, `baseline.ranking_test.fatal`.
+- **Impacto:** Fase 5 evalúa con ranking y usa top-k para decisiones
+  operativas. Fase 4 sigue siendo útil pero no es prerequisito estricto.
+
+## D055 · Umbrales absolutos no transfieren entre años; usar top-k
+- **Decisión:** las decisiones operativas usan **top-k ranking** (p. ej.
+  "los 2 % de accidentes con mayor probabilidad de fatal en la semana"),
+  no umbrales absolutos fijados en val.
+- **Motivo:** el umbral óptimo de fatal en val (0,143) no detecta ningún
+  fatal en test porque la distribución de probabilidad se desplaza entre
+  años. El ranking, sin embargo, es estable.
+- **Evidencia:** `12_ranking_and_augmentation.json` — baseline: threshold
+  fatal 0,143 (val) → 0 fatales en test; Lift@2 = 11,3 en test.
+- **Impacto:** Fase 5 reporta Recall@k y Lift@k, y las reglas de decisión
+  operativas se expresan en top-k.
+
+## D056 · SMOTE/ADASYN aportan marginalmente sobre LR; Borderline no
+- **Decisión:** para el baseline LR, SMOTE y ADASYN aportan +3 pp en
+  Recall@5(fatal) y +5 pp en recall serious a costa de +0,046 MAE ordinal.
+  Borderline-SMOTE empeora todo.
+- **Advertencia:** la diferencia SMOTE-baseline (25 vs 23 fatales en top 5 %)
+  no está validada con bootstrap. Con 62 fatales en test, puede ser ruido.
+- **Impacto:** Fase 5 prueba SMOTE con LGBM/CatBoost, pero no lo adopta
+  por defecto con LR. Borderline-SMOTE se descarta.
+
+## D057 · Cierre definitivo de Fase 3
+- **Decisión:** cerrar Fase 3.
+- **Evidencia acumulada:**
+  - Baseline LR-M2 con kappa 0,512 (clasificación), Lift@2 = 11,3 y
+    Recall@10 = 50 % (ranking, fatal).
+  - SMOTE/ADASYN aportan marginalmente.
+  - Cost-sensitive con matriz fija colapsa (problema de diseño, no de modelo).
+  - Calibración isotónica con <50 muestras degrada ranking.
+  - Top-k es la decisión operativa correcta; umbrales absolutos no transfieren.
+- **Impacto:**
+  - Fase 4 sigue como siguiente (features de red viaria).
+  - Fase 5 empieza con LGBM/CatBoost sobre M2 + Fase 4, con evaluación
+    por ranking (Lift@k, Recall@k) + clasificación con thresholds
+    optimizados en val y aplicados por quantiles en test.
+  - El baseline M2 queda como referencia: cualquier modelo de Fase 5 debe
+    superar Lift@5 = 7,4 y Recall@10 = 50 % (fatal) en test.
+
+## D058 · 208223 es la red de segmentos (namespace KML 2.2 antiguo)
+- **Decisión:** 208223 (INTENSIDADES.kml) es la fuente primaria de red viaria
+  con geometría. Contiene 7.856 LineString con coordenadas. Usa el namespace
+  `http://earth.google.com/kml/2.2`, no el OGC estándar.
+- **Motivo:** es la única fuente que hemos encontrado con segmentos
+  (no puntos ni polígonos sueltos) y cobertura de toda la ciudad.
+- **Evidencia:** `13_208223_kml_raw.json` — `n_LineString = 7.856`,
+  `n_coordinates = 7.856`, `namespaces[0].uri = "http://earth.google.com/kml/2.2"`.
+- **Limitaciones abiertas:**
+  - Los atributos por Placemark están en `<name>`/`<description>`, pendientes
+    de extraer.
+  - El KML es un snapshot dinámico (`<expires>onChange</expires>`); la
+    geometría de los segmentos es estable, pero el color/intensidad es live.
+    No usar los colores como feature temporal.
+- **Impacto:** 7.856 segmentos pasan a ser la unidad espacial de Fases
+  6, 7, 8 y 10.
+
+## D059 · 203962 XLSX sin identificador de trama
+- **Decisión:** 203962 XLSX no se usa como tabla de atributos por sí sola,
+  porque no tiene ID de trama unible a 208223. Sus datos (IMD, street names,
+  endpoints) pueden usarse vía **join espacial** con los segmentos del KML
+  de 203962 (que sí tienen coordenadas) o con 208223.
+- **Evidencia:** `13_203962_xlsx.json` — columnas `NOMBRE, ENTRE, Y, SENTIDO, IMD`.
+- **Impacto:** Fase 9/10 hace join espacial, no join por ID.
+
+## D060 · 203962 KMZ tiene 36 atributos por punto (SchemaData)
+- **Decisión:** 203962 KMZ se reparsea con la ruta correcta
+  `Placemark/ExtendedData/SchemaData/SimpleData`. Cada uno de los 1.961
+  Placemarks tiene 36 atributos. Los nombres de los campos están en el
+  `Schema` del KML (36 `SimpleField`), que se leerán en la siguiente iteración.
+- **Evidencia:** `13_203962_kmz.json` — `element_counts.SimpleData = 70.596`,
+  `element_counts.SchemaData = 1.961`, `SimpleField = 36`.
+- **Impacto:** es una tabla de 1.961 filas × 36 columnas con coordenadas,
+  útil para exposición y features.
+
+## D061 · Fuentes adicionales a explorar en Fase 4
+- **Decisión:** explorar dos fuentes nuevas antes de cerrar Fase 4:
+  - `300340` (velocidad por tramos, KML/XLSX/ZIP): candidata a feature
+    "velocidad_limite" o "velocidad_media" para Fase 5.
+  - `300733` (callejero SHP): fuente alternativa/complementaria de red
+    con atributos de vial (código, clase).
+- **Motivo:** velocidad de vía es probablemente la feature que discrimina
+  fatal vs serious — el motivo por el que M2 no funciona. Si 300340 la
+  aporta, Fase 5 puede cambiar sustancialmente.
+- **Evidencia:** `13_ckan_search.json`, queries "intensidad trafico tramos"
+  y "viales shp".
+- **Impacto:** Fase 4 tendrá una segunda iteración para incorporar 300340
+  antes de pasar a Fase 5.
+
+## D062 · IMD 203962 es un snapshot 2012-2013, no exposición temporal
+- **Decisión:** el IMD de 203962 se usa como **feature estática de segmento**
+  ("tipo de vía / intensidad histórica"), no como exposición temporal para
+  2019-2025.
+- **Motivo:** AÑO solo toma valores 2012 y 2013. No hay datos recientes.
+- **Evidencia:** `15_verify_imd.json` — `year_counts: {"2013": 1460, "2012": 501}`.
+- **Impacto:**
+  - Línea D (Fase 9-10) usa **300233** (aforos permanentes 2018-2025) como
+    exposición temporal real, no 203962.
+  - Fase 5 puede usar IMD 2013 como feature estática de segmento.
+
+## D063 · Bug del parser de IMD, corregido con Rango Inte como sanidad
+- **Decisión:** la columna `TOTAL` del KMZ tiene formato mixto (puntos como
+  separador decimal en floats y como separador de miles en strings cortos).
+  Para parsear correctamente, se usa `Rango Inte` como sanidad: si el valor
+  parseado no cae dentro del rango, se prueba el formato alternativo.
+- **Evidencia:** `15_verify_imd.json` — `median 11.804` (¿11,8 o 11.804?),
+  `max 995.0` vs `Rango Inte` "> 100.000 Veh/día" (10 puntos), inconsistente.
+- **Impacto:** se regenera `imd_points.parquet` y `segments_with_imd.parquet`.
+
+## D064 · 25,7 % de accidentes sin segmento a 100 m
+- **Decisión:** diagnosticar el no-match antes de decidir la unidad espacial
+  definitiva. Tres opciones a evaluar:
+  - A: mantener 137.295 con NaN en features de red (LGBM/CatBoost toleran NaN).
+  - B: reducir a ~102.000 (74,3 %) con features completas.
+  - C: aumentar `max_distance` a 200-300 m.
+- **Motivo:** 100 m puede ser demasiado estricto para calles sin segmentos
+  cercanos. También puede haber zonas (urbanizaciones nuevas) sin cobertura
+  en 208223.
+- **Evidencia:** `15_coverage.json` — `share_matched 0.7426`.
+- **Impacto:** se diagnostica y se elige antes de Fase 5.
+
+## D065 · Segmentos 208223 son anónimos; features de calle requieren join con callejero
+- **Decisión:** para asignar `COD_VIA`, `VIA_CLASE`, `VIA_NOMBRE` a cada
+  segmento 208223, se hace join espacial con `vialesvigentes` del callejero
+  213605 (o el SHP 300733).
+- **Evidencia:** `15_verify_208223.json` — `n_placemarks_with_name: 0`,
+  `first_placemark_xml` sin `<name>` ni `<description>`.
+- **Impacto:** Fase 4 iteración 5 asigna features de calle por join espacial.
+
+## D066 · IMD 203962 está almacenado en miles de veh/día, no en veh/día
+- **Decisión:** los valores del campo TOTAL (y HP T, Total S1, Total S2) del
+  KMZ 203962 están almacenados en **miles de vehículos/día**, no en unidades.
+  El parser debe multiplicar por 1000 los valores que interpretados como
+  unidades quedan fuera del rango indicado por `Rango Inte`.
+- **Motivo:** "7.354000000000000" representa 7354 veh/día, no 7,354. Se
+  verifica contra los cinco samples del KMZ, que solo cuadran con el factor
+  ×1000.
+- **Evidencia:** `16_imd_fixed.json` — `n_still_off_range: 1910` (mi parser
+  anterior era incorrecto), `TOTAL_fixed_stats.median: 11.804` (debería ser
+  ~11.804 en unidades, no 11,804).
+- **Impacto:** el parser se corrige en iteración 5. Sin esta corrección, la
+  feature "IMD por segmento" es inútil.
+
+## D067 · 208223 NO es la red definitiva; usar 300733 (callejero SHP)
+- **Decisión:** la red viaria base del proyecto es **300733** "Callejero
+  oficial. Rotulación del callejero municipal" (SHP). 208223 se conserva
+  como fuente secundaria de intensidad, no como red.
+- **Motivo:** 208223 solo cubre vías principales y M-30. El match a 100 m es
+  del 74,3 % global, pero cae al 21–37 % en Barajas, Vicálvaro y Villa de
+  Vallecas. Es insuficiente para KDE, Moran local y frecuencia por segmento.
+- **Evidencia:** `16_no_match_diagnosis.json`, `match_rate_100m_by_district`.
+- **Alternativas descartadas:**
+  - Aumentar el umbral a 500 m: lleva el match al 95,9 %, pero asignar un
+    accidente a un segmento a 500 m de distancia invalida el análisis
+    espacial fino (KDE sobre red, Moran). Se documenta como limitación, no
+    como solución.
+  - OSM: viable, pero 300733 ya tiene `COD_VIA` y `VIA_CLASE` y es oficial.
+- **Impacto:** Fase 4 iteración 5 descarga 300733, reconstruye
+  `network_segments.parquet` y rehace el join accidentes → segmentos.
+
+## D068 · Fatal tiene mejor cobertura de red que el resto (señal útil)
+- **Decisión:** en cualquier comparación, documentar que la cobertura de
+  segmentos para fatal (78,5 %) es ~6 pp superior a la de no_injury (72,5 %).
+  Esto **favorece** al modelo de gravedad con features de red, no lo sesga
+  en contra.
+- **Evidencia:** `16_no_match_diagnosis.json`, `match_rate_100m_by_severity`.
+- **Impacto:** Fase 5 puede usar features de red con confianza razonable,
+  pero debe documentar que el 21,5 % de fatales sin segmento se quedan con
+  NaN y los modelos deben tolerarlo (LGBM y CatBoost lo hacen nativamente).
+
+## D069 · El SHP real del callejero está en el Geoportal, no en CKAN
+- **Decisión:** la red viaria base del proyecto se descarga desde
+  `https://geoportal.madrid.es/fsdescargas/IDEAM_WBGEOPORTAL/CALLEJERO/VIALES/VIALES_SHP.zip`,
+  no desde los recursos de CKAN del dataset 300733.
+- **Motivo:** CKAN devuelve un WMS para 300733, no el SHP. La descarga directa
+  del fichero solo está disponible en el Geoportal del Ayuntamiento.
+- **Evidencia:** error 400 al intentar descargar el recurso "SHP" de 300733
+  (era un WMS) y confirmación en la página del Geoportal de que el SHP de
+  viales existe y es descargable[reference:1].
+- **Alternativas descartadas:**
+  - WFS (`...WFSServer?request=GetCapabilities&service=WFS`): válido pero
+    requiere petición WFS GetFeature con parámetros específicos. El ZIP es
+    más directo.
+  - OSM vía Geofabrik/pyrosm: viable como fallback, pero el SHP oficial ya
+    trae `COD_VIA` y `VIA_CLASE`, que son features directas para Fase 5.
+- **Impacto:** Fase 4 iteración 5 corrige la URL y descarga el SHP de viales.
+  Si esa URL falla, el fallback es el WFS o OSM.
+
+## D070 · El SHP de VIALES son polígonos de rotulación, no red viaria
+- **Decisión:** el SHP de VIALES (9.408 polígonos) se usa como **índice
+  espacial de nombres y tipos de vía**, no como red de segmentos.
+- **Motivo:** todos los polígonos. Campos TOP_ID, CV_TX_DENO, DEN_TX_NOM.
+  No tiene geometría lineal, por lo que no sirve para Network KDE ni para
+  Moran sobre segmentos.
+- **Evidencia:** `17b_callejero_structure.json` — `geometry_types: {Polygon: 8644,
+  MultiPolygon: 641}`, sin LineString.
+- **Uso permitido:** point-in-polygon de accidentes → `CV_TX_DENO` (tipo de
+  vía: Calle, Avenida, Paseo...). Feature estática para Fase 5.
+
+## D071 · Red viaria definitiva: OSM (osmnx) sobre bbox de accidentes
+- **Decisión:** la red viaria con geometría LineString se construye desde
+  OpenStreetMap con `osmnx`, filtrando al bbox de los accidentes y a
+  `network_type='drive'`.
+- **Alternativas descartadas:**
+  - **208223**: solo M-30 y vías principales. Match del 74 % a 100 m y del
+    21-37 % en distritos periféricos. Inservible como red.
+  - **Callejero 213605**: sin geometría de segmento (solo CSV con códigos
+    de vía).
+  - **300732/300733**: polígonos de rotulación, no red.
+  - **WFS CartoMadrid**: no confirmado. Requeriría iteración extra sin
+    garantía de éxito.
+- **Motivo:** OSM es la única fuente confirmada con LineString para todas
+  las vías de Madrid y con atributos de conducción estándar.
+- **Evidencia:** `17b_callejero_structure.json` (polígonos), e historial
+  de Fase 1-4 sobre 208223 y callejero.
+- **Limitaciones:**
+  - OSM es colaborativo; la calidad varía por zona, aunque Madrid está bien
+    mapeada.
+  - Los `maxspeed` están en OSM pero no siempre completos; habrá nulos.
+  - El bbox captura también municipios vecinos en los bordes; se filtra por
+    proximidad al polígono de Madrid o por bbox de accidentes estricto.
+- **Impacto:** Fase 4 iteración 6 genera `network_osm.parquet`. Iteración 7
+  hace join accidentes → segmentos OSM y deriva features para Fase 5.
+
+## D072 · OSM es la red viaria definitiva
+- **Decisión:** `network_osm.parquet` (95.437 edges, EPSG:4326) es la red
+  base del proyecto, sustituyendo a 208223 para todas las fases.
+- **Motivo:** 208223 solo cubre M-30 y principales (match 74 % global, 21-37 %
+  en distritos periféricos). OSM cubre toda la red con LineString y atributos
+  de conducción (`highway`, `maxspeed`, `lanes`, `oneway`).
+- **Evidencia:** `18_osm_summary.json` — 64.763 residential, 11.493 tertiary,
+  5.357 secondary, 4.279 primary, 991 motorway.
+- **Limitaciones abiertas:**
+  - `maxspeed` cubre solo 37 % de los edges.
+  - `lanes` cubre 52 %.
+  - Bbox incluye municipios vecinos (9.809 km > ~4.000 km de Madrid).
+  - Algún valor de maxspeed erróneo (min=3 km/h).
+- **Impacto:**
+  - Fase 5: join accidentes → nearest edge (bbox wide is fine).
+  - Fase 7/8 (KDE/Moran): filtrar a Madrid city con polígono de distritos.
+
+## D073 · Fallback de maxspeed vía highway ordinal
+- **Decisión:** `maxspeed_kmh` se rellena con valores por tipo de vía OSM
+  cuando está nulo, y se añade `maxspeed_is_imputed` (bool) para que los
+  modelos puedan distinguir el valor real del imputado.
+  Mapeo (basado en límites legales DGT para zona urbana):
+    motorway=120, trunk=100, primary=50, secondary=40, tertiary=30,
+    residential=30, living_street=20, unclassified=30, service=20.
+- **Motivo:** 63 % de edges sin `maxspeed` es demasiado para usarlo directo.
+  El fallback vía `highway` está disponible para el 100 % de edges.
+- **Evidencia:** `18_osm_summary.json`, `maxspeed_kmh_stats.n_null = 60.174`.
+- **Impacto:** Fase 5 usa `maxspeed_kmh_filled` + `maxspeed_is_imputed`.
+
+## D074 · Clip de outliers en maxspeed
+- **Decisión:** los valores de `maxspeed_kmh` se truncan a `[10, 130]` km/h.
+  Los que caigan fuera se tratan como nulos (y se rellenan con el fallback
+  D073, con `maxspeed_is_imputed=True`).
+- **Evidencia:** `18_osm_summary.json`, `maxspeed_kmh_stats.min = 3.0`.
+- **Impacto:** Fase 5 no ve velocidades absurdas.
+
+## D075 · Bbox generoso: filtrar en Fase 7/8
+- **Decisión:** el bbox de OSM (que incluye municipios vecinos) se mantiene
+  para Fase 5 y Fase 10. Para KDE (Fase 7) y Moran (Fase 8) se filtra a
+  Madrid city usando el polígono de distritos.
+- **Motivo:** la densidad calculada sobre un área mayor de la real subestima
+  las concentraciones reales en Madrid capital.
+- **Evidencia:** `18_osm_summary.json`, `total_network_length_km = 9.809` vs.
+  ~4.000 km de red viaria de Madrid capital.
+- **Impacto:** Fase 7 prepara un `madrid_boundary.gpkg` a partir de
+  `ox.geocode_to_gdf("Madrid, Spain")` o de los distritos del callejero CSV.
+
+## D076 · Geometrías inválidas en `network_callejero.parquet` se filtran al leer
+- **Decisión:** al cargar `network_callejero.parquet` (SHP de VIALES,
+  rotulación), se filtran las filas cuya `geometry_wkt` no sea un string
+  no vacío. Se cuentan y se reportan en consola.
+- **Motivo:** algunos polígonos del SHP son geometrías vacías o NULL, y al
+  escribir el parquet con `lambda g: g.wkt if g is not None else None` no
+  se cubrió el caso `pd.NA`/`NaN`. El valor pasa como `NaN` y rompe
+  `shapely_wkt.loads`.
+- **Evidencia:** error `TypeError: Expected bytes or string, got float` al
+  ejecutar el script 19.
+- **Impacto:** el loader de Fase 5 y de cualquier fase posterior que lea
+  geometrías WKT debe ser defensivo. Se puede refactorizar en una utilidad
+  `safe_wkt_loads()` en `src/madrid_safety/`.
+
+## D077 · Cierre de Fase 4
+- **Decisión:** cerramos Fase 4 con la matriz `accidents_with_network_features.parquet`
+  (137.295 filas × 20 columnas) como base enriquecida para Fase 5.
+- **Criterios superados:**
+  - Match accidentes → OSM edges: 100 %, mediana 2,2 m.
+  - Match accidentes → callejero (tipo_via): 95,5 %.
+  - Features de red con cobertura > 82 % (excepto maxspeed raw = 37 %,
+    resuelto vía fallback).
+- **Features nuevas añadidas al dataset:**
+  - `edge_highway` (categórica, 14 niveles)
+  - `edge_highway_ordinal` (0–7)
+  - `edge_maxspeed` (20–120 km/h, con fill vía D073)
+  - `edge_maxspeed_is_imputed` (bool, 36,6 % True)
+  - `edge_lanes` (1–12, 17,4 % NaN → imputable en Fase 5)
+  - `edge_length_m`
+  - `edge_distance_m` (2,2 m mediana)
+  - `edge_name` (categórica, alta cardinalidad → target encoding)
+  - `tipo_via` (Calle/Avenida/Paseo/Plaza/Carretera/…)
+  - `nombre_via` (texto)
+- **Limitaciones abiertas:**
+  - 10 accidentes fuera del bbox de Madrid → drop en Fase 5.
+  - 1 accidente con `distance_to_edge_m > 1700 m` → drop en Fase 5.
+  - 36,6 % de `edge_maxspeed` imputado → modelo debe considerar la
+    flag `edge_maxspeed_is_imputed`.
+  - `edge_name` y `nombre_via` requieren target encoding con validación
+    out-of-fold (no incluirlos en la ablación inicial).
+- **Impacto:** Fase 5 empieza con la ablación M4 vs. M4 + features de red.
+
+## D078 · `accidents_with_network_features.parquet` no es autocontenido
+- **Decisión:** el parquet enriquecido de Fase 4 (20 columnas) NO incluye
+  todas las columnas base de accidentes. Se debe hacer merge con
+  `accidents_clean.parquet` por `num_expediente` antes de construir features
+  de Fase 5.
+- **Motivo:** en la iteración 7 se seleccionó un subconjunto de columnas para
+  el join, y se perdió `n_people`, `n_vehicles`, `n_conductores`,
+  `n_pasajeros`, `n_peatones`, `has_*`, `tipo_accidente`,
+  `estado_meteorologico`, `distrito`.
+- **Evidencia:** error `KeyError: 'n_people'` al ejecutar el script 20.
+- **Impacto:** scripts de Fase 5 y siguientes cargan
+  `accidents_clean.parquet` + `accidents_with_network_features.parquet` y
+  mergean por `num_expediente`. Si en el futuro se regenera el parquet
+  enriquecido, hacerlo con merge completo desde el principio.
+
+## D039 (corregido) · Expectativas realistas para PR-AUC(fatal)
+- **Decisión original:** objetivo PR-AUC(fatal) >= 0,03 en test.
+- **Corrección:** objetivo ajustado a **>= 0,012** (el valor observado con
+  M2+red es 0,0134). El 0,03 original no se alcanza con las features
+  disponibles en este proyecto.
+- **Motivo:** PR-AUC 0,03 requeriría factores no observables: comportamiento
+  del conductor, maniobra, condiciones reales (no solo meteorológicas),
+  estado del vehículo.
+- **Evidencia:** `20_ablation_network.json` — M4+red: PR-AUC 0,0134,
+  Lift@2 14,16, Recall@10 53,3 %.
+- **Impacto:** Fase 5 reporta PR-AUC como está, sin forzar contra un
+  criterio inalcanzable. La decisión de "válido o no" se hace con Lift@2,
+  Lift@10 y recall serious, más que con PR-AUC absoluto.
+
+## D079 · Features de red aportan +44 % en PR-AUC(fatal), pero concentrado
+- **Decisión:** las features de red (maxspeed, highway, lanes, distance,
+  tipo_via) mejoran el ranking de fatal de forma real pero concentrada.
+- **Evidencia:** `20_ablation_network.json` — M4 baseline: PR-AUC 0,0093,
+  Lift@2 11,66, kappa 0,516. M4+red: PR-AUC 0,0134, Lift@2 14,16,
+  kappa 0,539. Lift@5 sin cambio (7,33 en ambos).
+- **Limitación:** la mejora es +44 % relativa pero solo +0,004 absoluta.
+  No transforma el modelo en un clasificador operativo de fatal.
+- **Impacto:** Fase 5 procede con las features de red integradas. El foco
+  sigue siendo ranking (Lift@k), no clasificación con umbral.
+
+## D080 · Bootstrap del ablation falló por stub no implementado
+- **Decisión:** el script 20 declaraba "bootstrapping" pero no lo ejecutaba.
+  Los resultados del ablation no tienen intervalos de confianza. Se re-ejecuta
+  en iteración siguiente (scripts 21).
+- **Motivo:** en la prisa por producir la ablación antes de Fase 5, dejé el
+  bootstrap como stub con `pass`. Error mío.
+- **Evidencia:** `20_ablation_network.json` no contiene claves `bootstrap_*`.
+- **Impacto:** antes de proceder a Fase 5 con LGBM, re-ejecutamos el ablation
+  con bootstrap completo para establecer CIs y saber si las mejoras son
+  significativas.
+
+## D081 · El val es demasiado pequeño para fatales (D030 confirmado)
+- **Decisión:** a partir de ahora, la evaluación y el tuning de fatal se hace
+  con val = 2023 + 2024 (52 fatales) y test = 2025 (34 fatales). Cambio de
+  esquema de splits respecto a D030.
+- **Motivo:** val (solo 2023, 24 fatales) es ruido. PR-AUC(fatal) en val es
+  0,029 en ambos modelos (no distingue entre ellos), mientras en test difiere
+  44 %. El val no es informativo.
+- **Evidencia:** `20_ablation_network.json` — val PR-AUC 0,0287 vs 0,0291
+  (idénticos); test 0,0093 vs 0,0134 (+44 %).
+- **Impacto:** re-creamos `splits_v2.parquet` con train 2019-22, val 2023-24,
+  test 2025. Se re-ejecuta el ablation.
+
+## D082 · "Recall fatal = 0" en thresholded es un problema de umbral, no de ranking
+- **Decisión:** los resultados thresholded (rec_fatal = 0) reflejan que el
+  umbral óptimo de val no transfiere a test. El ranking sí tiene señal
+  (Lift@2 14,16). Fase 5 reporta ambos y prioriza el ranking.
+- **Motivo:** val 2023 (24 fatales) tiene una distribución de probabilidad
+  distinta a test 2024-25 (60 fatales). El threshold learned on val is too
+  high for test.
+- **Impacto:** D055 sigue vigente. Fase 5 explora top-k como decisión
+  operativa, no threshold absoluto.
+
+## D083 · Cierre de Fase 4 con resultado negativo sobre features de red
+- **Decisión:** cerrar Fase 4 con conclusión empírica: las features de red
+  no mejoran el ranking de fatal de forma estadísticamente significativa.
+- **Evidencia:** `21_ablation_v2.json`, deltas con CI 95 % que cruzan cero
+  en PR-AUC(fatal), Lift@2, Lift@5, Recall@5, Recall@10.
+- **Motivo:** la mejora aparente de la iteración 0b anterior era un artefacto
+  del split (val con 24 fatales, test con 2024 atípico). Con val=2023-24
+  (52 fatales) y test=2025 (32 fatales), el efecto desaparece.
+- **Valor retenido de Fase 4:**
+  - `network_osm.parquet` (95.437 edges) para Fases 7 y 8 (KDE, Moran).
+  - `accidents_with_network_features.parquet` para Fase 5 (feature ablation).
+  - `imd_points.parquet` (1.961 puntos, IMD corregido ×1000).
+  - `network_callejero.parquet` (9.285 polígonos de rotulación).
+- **Impacto:** Fase 5 incluye features de red como uno de los brazos de la
+  comparación (no como prerequisito). Si LGBM/CatBoost las aprovechan mejor
+  que LR, se documentará; si no, se descartan.
+
+## D084 · Fase 5 · Plan y escalera de objetivos
+- **Decisión:** Fase 5 sigue una escalera descendente según la calidad
+  observada:
+  1. **Opción A** (primera): target 4 clases (no_injury / minor / serious /
+     fatal). Modelos LGBM, CatBoost, BART. Con y sin features de red.
+  2. **Opción B** (si A no es utilizable): 3 clases agrupando serious+fatal
+     como "grave"; fatal se predice como ranking auxiliar dentro de "grave".
+  3. **Opción C** (si B no es utilizable): target binario
+     {grave = serious|fatal} vs {leve = no_injury|minor}.
+- **Motivo:** A preserva el objetivo original (4 clases), B añade utilidad
+  operativa, C es el fallback más honesto.
+- **Evidencia:** tras D083, el techo de fatal con datos actuales está en
+  PR-AUC ~0,01. A podría seguir siendo válido para las 3 clases mayoritarias.
+- **Impacto:** cada opción se evalúa con el mismo protocolo (Lift@k,
+  Recall@k, kappa, MAE). Se decide tras ver los resultados.
+
+## D085 · Modelos de Fase 5: LGBM + CatBoost + BART
+- **Decisión:** tres familias de modelos, todas con tuning extensivo:
+  - **LightGBM**: `RandomizedSearchCV` con `n_iter=100`, cv=LeaveOneGroupOut
+    sobre train-years, `n_jobs=-1`. Grid amplio (~200 combinaciones
+    muestreadas de 8 hiperparámetros).
+  - **CatBoost**: `RandomizedSearchCV` con `n_iter=60` (más lento),
+    misma cv, `task_type='CPU'`. Grid amplio (~150 combinaciones de 6
+    hiperparámetros).
+  - **BART**: `pymc-bart` para binario (fatal vs resto). Nota: multiclase
+    BART no está soportado nativamente en Python; se hace como auxiliar
+    binario y se combina con las probabilidades de los otros modelos si
+    aporta. Iteración 2.
+- **Motivo:** LGBM y CatBoost son los boosting estándar, con
+  implementaciones maduras. BART añade el componente bayesiano y la
+  incertidumbre calibrada.
+- **Evidencia:** `scikit-learn>=1.7`, `lightgbm`, `catboost`, `pymc-bart`
+  disponibles en conda/pip para Python 3.11.
+- **Impacto:** las comparaciones entre los tres se reportan con el mismo
+  protocolo. El modelo ganador se elige por kappa + Lift@5 + PR-AUC(fatal),
+  no por un único criterio.
+
+## D086 · CV interna con LeaveOneGroupOut por año
+- **Decisión:** dentro de `RandomizedSearchCV`, usar `LeaveOneGroupOut` con
+  `groups=year` sobre train (2019, 2020, 2021, 2022). 4 folds, cada uno
+  entrena con 3 años y valida en el restante.
+- **Motivo:** evitar el leakage temporal que produciría KFold aleatorio.
+  Mantiene la misma filosofía que D040.
+- **Evidencia:** el split externo ya es temporal (D081); la CV interna debe
+  serlo también.
+- **Impacto:** el tiempo de búsqueda se multiplica por 4 (folds). Se
+  compensa con `n_jobs=-1`.
+
+## D089 · Imputación uniforme (median + indicador) antes de SMOTE
+- **Decisión:** en el script 23 (Opción A con augmentation), TODAS las
+  columnas numéricas se imputan con `SimpleImputer(median, add_indicator=True)`
+  antes de aplicar SMOTE/Borderline/ADASYN. También en la variante "none",
+  para comparación justa.
+- **Motivo:** SMOTE y variantes no aceptan NaN (interpolan). Si imputamos
+  solo las variantes con augmentation, la comparación contra "none"
+  (NaN nativo en LGBM/CatBoost) queda confundida por la representación
+  de los datos, no por la augmentation.
+- **Trade-off aceptado:** LGBM y CatBoost pierden su manejo nativo de NaN
+  en el "none" variant. Los indicadores de missingness preservan la señal.
+- **Evidencia:** `ValueError: Input X contains NaN` en SMOTE/Borderline/ADASYN
+  al ejecutar el script 23 v1.
+- **Impacto:** `lgbm__none` en este run difiere ligeramente del anterior
+  (se borra `23_opcion_a_full.json` previo antes de re-ejecutar).
+
+## D089 · Preprocesado unificado entre LR y boosting en Fase 5
+- **Decisión:** todas las variantes de Fase 5 (LR, LGBM, CatBoost, con o sin
+  augmentation) usan el mismo patrón de preprocesado que M4 (script 20):
+  `SimpleImputer(median, add_indicator=True)` en numéricas + `OneHotEncoder`
+  en categóricas, con `fit` solo en train. Sin `StandardScaler` para
+  árboles.
+- **Motivo:** (a) SMOTE/Borderline/ADASYN no aceptan NaN; (b) mantener el
+  mismo preprocesado entre modelos hace las comparaciones justas;
+  (c) `fit` solo en train evita meter vocabulario de val/test en el encoder.
+- **Evidencia:** los dos `lgbm__none` / `catboost__none` del run anterior
+  no son comparables con las variantes de augmentation por diferencia
+  de representación (NaN vs mediana). Corregido en esta iteración.
+- **Impacto:** `23_opcion_a_full.json` se regenera entero. Los resultados
+  de `none` con imputación serán los comparables.
+
+## D091 · Cierre de Fase 5 con Opción B thresholded
+- **Decisión:** Fase 5 cierra con dos modelos:
+  - **Fatal** (Opción A): CatBoost 4-clases con `fatal_Lift@2 ≈ 6-10`,
+    PR-AUC(fatal) ≈ 0,008. Filtro de revisión prioritaria.
+  - **Grave** (Opción B): CatBoost+ADASYN con thresholds calibrados en val.
+    `recall_grave = 0,32 [0,30, 0,34]`, `precision_grave = 0,26`,
+    kappa 0,54, PR-AUC(grave) 0,24.
+- **Criterios superados:** 3 de 4 (el que falla —recall_grave > 0,40—
+  es estructural, no de tuning).
+- **Motivo:** el techo de fatal es ~0,008 PR-AUC con estas features. El techo
+  de grave es ~0,32 recall a threshold calibrado. Opción C (binario) no
+  cambiará esto porque la limitación es prevalencia × lift.
+- **Evidencia:** `23_opcion_a_full.json`, `24_bart.json`, `25_opcion_b.json`,
+  `26_bart_opcion_b.json`, `27_opcion_b_thresholds.json`.
+- **Modelos descartados con evidencia:**
+  - BART 4-clases: kappa 0,40, PR-AUC(fatal) 0,007. Colapso a mayoritarias.
+  - BART Opción B smoke: PR-AUC(grave) 0,166 vs 0,24 boosting. No aporta.
+  - Augmentation: SMOTE/Borderline/ADASYN aportan marginalmente
+    (+0,5-1 pp kappa) pero dentro del ruido bootstrap.
+  - `class_weight='balanced'`: confirma D038 — degrada PR-AUC(fatal).
+
+## D092 · Métricas y modelos por caso de uso
+- **Decisión:** cada modelo se reporta con las métricas apropiadas a su uso:
+  - **Fatal (Opción A)**: `PR-AUC(fatal)`, `Lift@2`, `Lift@5`, `Recall@10`.
+  - **Grave (Opción B)**: `PR-AUC(grave)`, `recall_grave` a threshold
+    calibrado, `precision_grave`, kappa_q.
+- **Motivo:** argmax y F1-macro colapsan grave/fatal por la baja prevalencia
+  (10 % y 0,15 % respectivamente). El ranking y el threshold calibrado
+  son las métricas que reflejan la utilidad operativa real.
+- **Evidencia:** comparación `argmax` vs `thresholded` en
+  `27_opcion_b_thresholds.json`.
+- **Impacto:** README y Fase 11 documentan cada modelo con su métrica.
+
+## D093 · Fase 5 cerrada · consolidación a Fase 11
+- **Decisión:** pasar directamente a Fase 11 (consolidación y publicación).
+- **Motivo:** todas las iteraciones restantes (Opción C, más augmentations,
+  más modelos) están acotadas por los mismos límites estructurales
+  (prevalencia de fatal 0,15 %, de grave 10 %). No hay margen cualitativo.
+- **Impacto:** Fase 11 produce README, pipeline reproducible, documentación
+  de limitaciones y conclusiones.
+
+## D094 · Opción C modificada (injured vs no_injury) supera todos los
+objetivos operativos de Fase 5
+- **Decisión:** Fase 5 cierra con el modelo binario injured/no_injury como
+  entrega principal del proyecto.
+- **Resultados en test=2025**:
+  - LR:     F1(inj)=0,764, Recall=0,838, Precision=0,703, PR-AUC=0,813,
+            ROC-AUC=0,871, kappa=0,564
+  - LGBM:   F1(inj)=0,770, Recall=0,843, Precision=0,710, PR-AUC=0,826,
+            ROC-AUC=0,878, kappa=0,576
+  - CatBoost: F1(inj)=0,766, Recall=0,830, Precision=0,712, PR-AUC=0,817,
+            ROC-AUC=0,873, kappa=0,571
+  - BART:   F1(inj)=0,721, Recall=0,771, PR-AUC=0,772, kappa=0,494 (descarte)
+- **Lift@k (LGBM)**: top-5% injury_rate 92 % (lift 2,18),
+  top-20% injury_rate 88 % (lift 2,08, recall 41,5 %).
+- **Criterios superados**:
+  - F1(injured) > 0,70 ✅
+  - PR-AUC(injured) > 0,80 ✅
+  - ROC-AUC(injured) > 0,85 ✅
+  - Recall(injured) > 0,75 ✅
+  - Precision(injured) > 0,65 ✅
+- **Evidencia:** `28_opcion_c.json`.
+- **Impacto:** Fase 5 cierra con esta opción como resultado principal.
+  Modelos auxiliares (Opción A para fatal, Opción B para grave) se
+  documentan como casos de uso secundarios.
+
+## D095 · LR como modelo final pese a LGBM en punto estimado
+- **Decisión:** preferir LR como modelo de producción para injured
+  (F1=0,764) frente a LGBM (F1=0,770) — diferencia dentro del ruido
+  (bootstrap CI solapan en F1 y PR-AUC).
+- **Motivo:** D032 fija "diferencia < 0,02 en F1 ⇒ preferir el modelo más
+  simple". Adicionalmente:
+  - LR requiere 1 hiperparámetro efectivo (`C=0,054`) vs LGBM 10.
+  - LR es interpretable en coeficientes crudos (odds ratios).
+  - LR entrena en segundos vs minutos.
+- **Evidencia:** `28_opcion_c.json`, `bootstrap_test` de LR y LGBM.
+- **Impacto:** El README de Fase 11 presenta LR como modelo principal y
+  LGBM como alternativa. Si en producción se quiere el último 1 % de
+  performance, LGBM es defendible.
+
+## D096 · BART se descarta definitivamente (tercera evidencia)
+- **Decisión:** no incluir BART en el pipeline final de ninguna variante
+  (4-clases, 3-clases, binario). Se documenta como intento fallido.
+- **Motivo:** en las tres formulaciones, BART queda claramente por debajo
+  de LR/LGBM/CatBoost:
+  - 4-clases: kappa 0,400 vs 0,552 (LR/LGBM)
+  - 3-clases (smoke): PR-AUC(grave) 0,166 vs 0,244
+  - binario: F1(inj) 0,721 vs 0,764 (LR) — CI disjunto
+- **Evidencia:** `24_bart.json`, `26_bart_opcion_b.json`, `28_opcion_c.json`.
+- **Impacto:** Fase 11 cita BART en "trabajo relacionado / intentos
+  descartados". El ángulo bayesiano no se persigue más.
+
+## D097 · Cierre de Fase 5
+- **Decisión:** Fase 5 cerrada con:
+  1. **Modelo principal**: LR binario injured/no_injury
+     (F1=0,764, PR-AUC=0,813, Recall=0,838, Precision=0,703).
+  2. **Modelo secundario 1**: LR o CatBoost 4-clases para ranking de fatal
+     (Lift@2 ≈ 6-10 en Opción A).
+  3. **Modelo secundario 2**: CatBoost+ADASYN 3-clases con threshold
+     para triage de grave (recall 0,32, precision 0,26).
+  4. **Descartados con evidencia**: BART, augmentation (marginal),
+     `class_weight='balanced'` (degrada PR-AUC fatal), distinción
+     fatal vs serious (techo estructural).
+- **Evidencia acumulada:** `23_opcion_a_full.json`, `24_bart.json`,
+  `25_opcion_b.json`, `26_bart_opcion_b.json`, `27_opcion_b_thresholds.json`,
+  `28_opcion_c.json`.
+- **Impacto:** Paso directo a Fase 11 (consolidación y publicación).
+  No hay margen cualitativo en más iteraciones: con estas features,
+  el techo de injured está en F1 ≈ 0,77 y el de fatal en PR-AUC ≈ 0,008.
+
+## D098 · Jerarquía natural (injured → grave|injured → fatal|grave)
+evaluada y descartada como solución a fatal
+- **Decisión:** la jerarquía probabilística correcta (partición exacta de
+  4 clases por Bayes) se evaluó con LGBM y LR. No supera al flat 4-class
+  en PR-AUC(fatal) de forma estadísticamente significativa (CIs solapan).
+- **Evidencia:**
+  - Nivel 3 (fatal|grave) en test[grave]: PR-AUC 0,024 (LGBM), 0,026 (LR)
+    frente a base rate 0,015. Ratio 1,6× sobre azar. Es el techo.
+  - Jerárquico LGBM vs flat LGBM: PR-AUC 0,0058 vs 0,0064 (−9 %),
+    Lift@2 6,24 vs 4,68 (+33 %), kappa 0,556 vs 0,554 (indistinguible).
+  - Jerárquico LR vs flat LR: PR-AUC 0,0070 vs 0,0053 (+32 %),
+    kappa 0,507 vs 0,417, Lift@2 3,12 vs 4,68.
+  - Bootstrap 95 % CI de PR-AUC(fatal) se solapan en los 4 modelos.
+- **Motivo:** el cuello de botella es la muestra (116 fatales en train),
+  no la arquitectura. Ni LGBM ni LR aprenden a distinguir fatal de serious
+  dentro de grave con 116 ejemplos positivos.
+- **Impacto:**
+  - Fase 5 cierra con D097 sin cambios: el modelo binario injured es el
+    resultado principal; fatal queda documentado como inviable.
+  - La jerarquía se documenta como **exploración metodológicamente correcta
+    pero empíricamente infructuosa**, útil como apéndice del informe final.
+
+## D099 · Fatal es inviable con los datos disponibles: techo cuantificado
+- **Decisión:** formalizar el techo de fatal como limitación del proyecto,
+  no como fracaso de modelado.
+- **Evidencia acumulada:**
+  - Flat 4-class: mejor PR-AUC(fatal) = 0,0064 (LGBM), 0,0053 (LR).
+  - Jerárquico: mejor PR-AUC(fatal) = 0,0070 (LR), con nivel 3 condicional
+    PR-AUC = 0,026 (base rate 0,015, ratio 1,7×).
+  - Opción A anterior: 0,0086 (LR + features red), sin superar en ranking
+    significativamente.
+  - Opción B (grave) funciona: PR-AUC(grave) = 0,24, recall_grave = 0,32.
+  - Opción C (injured) funciona muy bien: F1 = 0,77, PR-AUC = 0,83.
+- **Ratio máximo PR-AUC(fatal)/base_rate** en todo el proyecto = **~5,7×**
+  (Opción A, Lift@2 = 10,9). Es el techo con 116 fatales en train.
+- **Regla de parada:** cualquier formulación nueva que no multiplique por
+  ≥ 2 el mejor PR-AUC(fatal) observado (0,0086) no merece evaluación.
+  Con la evidencia actual, ninguna formulación cumple esa condición.
+- **Impacto:** cerrar Fase 5 sin más iteraciones de modelado de fatal.
+
+## D100 · Ridge/Lasso con y sin PCA evaluados y descartados
+- **Decisión:** Ridge, Lasso, y PCA (junto a las variantes con/sin) se
+  evaluaron como última formulación. No superan a LGBM/LR en injured
+  ni a los boosting en 4-clases de forma estadísticamente significativa.
+- **Evidencia:**
+  - Injured: LGBM 0,7718 F1 > Ridge 0,7664 ≈ Lasso 0,7666 ≈ LR 0,7647.
+    PCA degrada −0,03 F1 en ambas familias (0,737 en Ridge-PCA).
+  - 4-clases: `ridge_4class_pca` obtiene PR-AUC(fatal)=0,0082 y
+    Lift@2=9,37 (empatando con LR M4+net de Opción A), pero con
+    kappa_q=0,432 (peor que LGBM 0,554) y CI [0,0036, 0,0258].
+  - Lasso multiclase: convergencia mala (kappa 0,300), 756 s de fit.
+- **Motivo:** sin mejora robusta sobre la familia LR/LGBM. La anomalía
+  de Ridge+PCA en fatal es de un solo modelo, sin validación cruzada
+  y con CIs enormes.
+- **Impacto:** Fase 5 queda cerrada definitivamente con D097-D099 sin
+  cambios.
+
+## D102 · Cierre de Fase 6 — persistencia temporal de clusters HDBSCAN
+
+**Decisión:** cerrar Fase 6 con los resultados del script 32 v3.
+
+**Parámetros HDBSCAN (D101, sin cambios):**
+- `all`: mcs=50, ms=10 → 375 clusters en train, radio_eff mediano 200 m, noise 0.414.
+- `injured`: mcs=30, ms=10 → 307 clusters en train, radio_eff mediano 184 m, noise 0.449.
+
+**Regla de asignación de futuros:**
+- Centroide de train más cercano si `dist < 1.0 × min(p90_radius, 500 m)`.
+- Sin refit en val/test.
+
+**Resultados:**
+- Cobertura de val/test: 0.50-0.56 (ambas variantes). Generosity gap negativo (-2.6 a -4.9 pp): la regla es más estricta que HDBSCAN en train.
+- Correlación de rangos de tamaños de cluster (Spearman ρ): 0.73-0.82 (todos los clusters), 0.51-0.60 (top-100 por train). Ambos con p < 1e-50.
+- Persistencia binaria (`≥10` accidentes futuros): 65-99% de los clusters de train. **Sensible al tamaño del split; no comparar val (9k) vs test (18k) en `injured`**.
+- Top-k overlap: 30-50% para k=10, 60-75% para k=20, 63-70% para k=30.
+- Top-k share ratio: 0.68-0.93 (k=10), 0.81-1.01 (k=20), 0.85-1.04 (k=30).
+
+**Interpretación:**
+- La estructura de hotspots es **agregadamente estable**: los clusters existen en future con tamaños correlacionados con train.
+- El ranking exacto es volátil en el top-10; el conjunto top-20/30 es operativamente estable.
+- Los criterios iniciales `ρ_top100 ≥ 0.60` y `coverage_new ≤ 0.80` se relajan a la vista de los datos. El primero estaba por debajo del techo de ruido esperado por muestreo Poisson; el segundo nunca debió ser criterio duro.
+
+**Limitaciones documentadas:**
+- Clusters elongados (radio_m > 1 km en clusters 5, 17, 24, 38, 134 en `all`; 3, 4, 8, 12, 17, 23, 28, 35, 48, 73, 76, 155 en `injured`) representan encadenamientos de densidad a través de zonas con pocos accidentes. Se conservan para Fase 7-8 pero se documentan como clusters de baja calidad geométrica.
+- `share_persisted` con umbral absoluto no es comparable entre splits de distinto tamaño.
+
+**Impacto en fases posteriores:**
+- Fase 7 (KDE sobre red): usa el fit de train (`mcs=50/30`) como referencia; los parquet `hdbscan_persistence_*.parquet` etiquetan cada accidente con su `cluster_train` (o −1) para análisis cruzados.
+- Fase 8 (Moran): independiente de HDBSCAN; puede usar la rejilla de Fase 7.
+- Fase 10: los clusters de HDBSCAN pueden usarse como unidad espacial alternativa a la rejilla; se decide con los resultados de Fase 8.
+
+**Alternativa considerada y descartada:** escalar a `mcs=100/50` para clusters más grandes y estables por construcción. Descartado porque HDBSCAN ya es estable a nivel de estructura; el problema es ruido de muestreo en clusters pequeños, no la escala de los clusters.
+
+## D102 · Cierre de Fase 6 — persistencia temporal de clusters HDBSCAN
+
+**Decisión:** cerrar Fase 6 con los resultados de los scripts 32 v3 y 33.
+
+**Parámetros HDBSCAN (D101, sin cambios):**
+- `all`: mcs=50, ms=10 → 375 clusters en train, radio_eff mediano 200 m, noise 0.414.
+- `injured`: mcs=30, ms=10 → 307 clusters en train, radio_eff mediano 184 m, noise 0.449.
+
+**Regla de asignación de futuros:**
+- Centroide de train más cercano si `dist < 1.0 × min(p90_radius, 500 m)`.
+- Sin refit en val/test.
+
+**Resultados de persistencia (script 32 v3):**
+- Cobertura val/test: 0.50-0.56. Generosity gap negativo (-2.6 a -4.9 pp): la regla es más estricta que HDBSCAN en train.
+- Spearman ρ tamaños de cluster: 0.73-0.82 (todos), 0.51-0.60 (top-100). p < 1e-50.
+- Top-k overlap: 30-50% (k=10), 60-75% (k=20/30).
+- Top-k share ratio: 0.68-0.93 (k=10), 0.81-1.01 (k=20), 0.85-1.04 (k=30).
+
+**Validación del techo metodológico (script 33):**
+- `sanity_train_to_train` = **0.942** (`all`) / **0.918** (`injured`). **El pipeline de asignación por centroide introduce ~6-8% de dispersión intrínseca**, incluso reasignando el mismo conjunto. Es ambigüedad por vecindad de clusters, no bug.
+- Split aleatorio 50/50 de train: ρ = 0.853 / 0.774. Es el **techo de muestreo**.
+- Ratio `ρ(train→test) / ρ(50/50)` = **0.962** (`all`) / **0.997** (`injured`). El split temporal **no introduce pérdida de estabilidad medible** más allá del ruido de muestreo.
+- Ratio `ρ(train→val) / ρ(75/25)` = **0.960** (`all`) / **0.893** (`injured`). Coherente (val en `injured` tiene 9k puntos, ruido alto).
+
+**Interpretación:**
+- La estructura de hotspots es **estable en el rango de lo muestreable**. El ρ observado train→test (0.82 / 0.77) está a cero margen de mejora respecto al techo del split interno (0.85 / 0.77): **87% del techo duro y 96-100% del techo de muestreo**.
+- Los clusters existen en future y sus tamaños están correlacionados con train, en el máximo alcanzable con este método y estos datos.
+- El ranking exacto es volátil en el top-10; el conjunto top-20/30 es operativamente estable (60-75% overlap, 85-104% de share retenido).
+
+**Criterios iniciales relajados a la vista de los datos:**
+- `ρ_top100 ≥ 0.60`: descartado. El techo de muestreo está en 0.85 (all) / 0.77 (injured) para **todos** los clusters, y el subconjunto top-100 está por debajo del techo porque incluye clusters pequeños con ruido de conteo. El valor observado (0.51-0.60) es la estabilidad real del top-100, no un fallo.
+- `coverage_new ≤ 0.80`: mantenido (0.50-0.56 pasa).
+
+**Limitaciones documentadas:**
+- El pipeline de asignación por centroide impone un techo duro de ~0.94 en ρ. No es comparable con estudios que usen etiquetado denso.
+- Clusters elongados (radio_m > 1 km en `all`: 5, 17, 24, 38, 134; en `injured`: 3, 4, 8, 12, 17, 23, 28, 35, 48, 73, 76, 155) representan encadenamientos de densidad a través de zonas con pocos accidentes. Documentados para Fase 7-8.
+- `share_persisted` con umbral absoluto no es comparable entre splits de distinto tamaño.
+- `test_50_tA_to_tB` en `injured` degenera (HDBSCAN produce 3 clusters en 9k puntos). No interpretable.
+
+**Impacto en fases posteriores:**
+- Fase 7 (KDE sobre red): usa el fit de train (`mcs=50/30`) como referencia; los parquet `hdbscan_persistence_*.parquet` etiquetan cada accidente con su `cluster_train` (o −1) para análisis cruzados.
+- Fase 8 (Moran): independiente de HDBSCAN; puede usar la rejilla de Fase 7.
+- Fase 10: los clusters de HDBSCAN pueden usarse como unidad espacial alternativa a la rejilla; se decide con los resultados de Fase 8.
+
+**Alternativa considerada y descartada:** escalar a `mcs=100/50`. Descartado: HDBSCAN ya es estable a nivel de estructura; el problema es ruido de muestreo en clusters pequeños, no escala.
+
+## D103 · Bandwidth de Network KDE: 260 m primario, 500 m referencia
+
+**Decisión:** usar bw = 260 m como valor primario para Fase 7. bw = 500 m
+como referencia visual secundaria en los mapas del script 35.
+
+**Motivo:** los criterios cuantitativos planteados en script 34 (stability
+≥ 0.80, contrast ∈ [0.60, 0.90]) estaban mal diseñados:
+- `stability` es monótona en bw y asintóticamente 1; no discrimina.
+- `contrast` entre density_all y density_injured es ≥ 0.97 a todos los
+  bws: la severidad **no redistribuye espacialmente** los accidentes a
+  escala KDE. El criterio pedía algo imposible.
+
+**Justificación de 260 m:**
+1. Codo del gráfico marginal de estabilidad (saltos < 0.5 pp después).
+2. Coincide con el radio mediano de HDBSCAN (201 m all, 184 m injured),
+   alineando las dos fases a la misma escala física.
+3. Consistente con literatura de hotspot detection urbano (200-300 m).
+
+**Hallazgo anexo (documentar en reporte Fase 7):** a escala KDE, la
+severidad no crea geografías distintas. Los hotspots de "all" e "injured"
+son los mismos; lo que varía es la tasa de heridos por cluster. Refuerza
+la conclusión de Fase 5/6 de que el valor predictivo está en el modelo
+de injured (D094), no en la separación geográfica de severidad.
+
+**Impacto en Fase 8:** el KDE de Fase 7 con bw=260 m se usará como
+referencia comparativa para validar la rejilla y la matriz de pesos
+espaciales del Moran local.
+
+## D104 · KDE y HDBSCAN son complementarios, no redundantes
+
+**Hallazgo (script 35):** con bw = 260 m, la correlación de Spearman
+entre tamaño de cluster (n_train) y densidad KDE mediana es 0.11 (all)
+y 0.07 (injured). Los top-20 clusters por tamaño sí caen en zonas densas
+(70% / 90% en top-20% KDE), pero ~30-35% de los clusters totales viven
+en zonas de densidad media (percentil KDE < 80).
+
+**Interpretación:** HDBSCAN detecta dos patrones distintos:
+1. Hotspots "obvios" en zonas de alta densidad global (los top-20).
+2. Anomalías locales en zonas de densidad media, que representan picos
+   locales respecto a su entorno pero no hotspots globales.
+
+**Decisión:** en Fase 8 (Moran) y Fase 10 (Poisson), mantener ambos
+métodos como señales complementarias. KDE identifica los hotspots
+globales; HDBSCAN captura anomalías locales. Ninguno sustituye al otro.
+
+**Limitación de la métrica:** `n_clusters_persisted_train == n_clusters_train`
+en script 35 porque el filtro `n_train >= 10` es trivialmente cierto para
+HDBSCAN con mcs ∈ {30, 50}. Renombrar la métrica a `frac_dense_overall`
+en la consolidación de Fase 11.
+
+**Impacto:** la narrativa de las extensiones (Fases 6-8) pasa de
+"redundancia de métodos" a "complementariedad", que es más defendible
+y más útil operativamente.
+
+## D104 · KDE y HDBSCAN son complementarios, no redundantes
+
+**Hallazgo (script 35):** con bw = 260 m, la correlación de Spearman
+entre tamaño de cluster (n_train) y densidad KDE mediana es 0.11 (all)
+y 0.07 (injured). Los top-20 clusters por tamaño sí caen en zonas densas
+(70% / 90% en top-20% KDE), pero ~30-35% de los clusters totales viven
+en zonas de densidad media (percentil KDE < 80).
+
+**Interpretación:** HDBSCAN detecta dos patrones distintos:
+1. Hotspots "obvios" en zonas de alta densidad global (los top-20).
+2. Anomalías locales en zonas de densidad media, que representan picos
+   locales respecto a su entorno pero no hotspots globales.
+
+**Decisión:** en Fase 8 (Moran) y Fase 10 (Poisson), mantener ambos
+métodos como señales complementarias. KDE identifica los hotspots
+globales; HDBSCAN captura anomalías locales. Ninguno sustituye al otro.
+
+**Limitación de la métrica:** `n_clusters_persisted_train == n_clusters_train`
+en script 35 porque el filtro `n_train >= 10` es trivialmente cierto para
+HDBSCAN con mcs ∈ {30, 50}. Renombrar la métrica a `frac_dense_overall`
+en la consolidación de Fase 11.
+
+**Impacto:** la narrativa de las extensiones (Fases 6-8) pasa de
+"redundancia de métodos" a "complementariedad", que es más defendible
+y más útil operativamente.
+
+## D105 · Cierre de Fase 7 — Network KDE
+
+**Decisión:** cerrar Fase 7 con `network_kde_final.parquet` (opción C,
+bw = 260 m) como input de densidad para Fase 8.
+
+**Configuración final:**
+- **Opción:** C (2D KDE gaussiano sobre coordenadas de accidentes,
+  evaluado en los 95,437 edge-midpoints de la red OSM).
+- **Bandwidth:** 260 m primario (justificado por codo de estabilidad
+  y coincidencia con escala de HDBSCAN, D103). 500 m como referencia
+  visual en los PNG de script 35.
+- **Colores de mapa:** log-norm, vmin=p5, vmax=p99.5 por (bw, periodo,
+  severidad). Barra de color informa rango efectivo.
+
+**Comparación C vs B (script 36b):**
+- mean Spearman ρ = 0.994, min = 0.987 (36 combinaciones).
+- mean Jaccard top-20% = 0.982, min = 0.934.
+- **Decisión:** C gana por simplicidad. B no aporta información.
+
+**Criterios superados:**
+- 12 mapas PNG generados (2 bw × 3 periodos × 2 severidades).
+- `network_kde_final.parquet` (95,437 filas × 7 columnas).
+- `accidents_with_edges.parquet` con `dist_to_line_m` corregida
+  (median 2.19 m, p90 6.49 m, coincidente con Fase 4).
+- Cross-check HDBSCAN vs KDE documentado (D104).
+
+**Hallazgos clave:**
+1. **La severidad no redistribuye geografía a escala KDE.** El contraste
+   entre density_all y density_injured es ≥ 0.97 a todos los bw. Los
+   hotspots geográficos son los mismos para ambos; lo que varía es la
+   *tasa* de heridos por cluster (ya capturada por el modelo de Fase 5).
+2. **C ≈ B.** La aproximación 2D KDE sobre puntos crudos es suficiente;
+   el edge-weighting no añade información medible.
+3. **KDE ⊥ HDBSCAN** (rho 0.11 / 0.07): los clusters de HDBSCAN capturan
+   anomalías locales que el KDE global no prioriza (D104).
+
+**Limitaciones documentadas:**
+- Option B tuvo un coste de 20 min para un resultado que a posteriori
+  era predecible. Lección: comparaciones "mismo modelo, distinta fuente"
+  deben hacerse con subset (bw=260, train) antes de escalar.
+- Los 12 PNG tienen la barra de color con rango completo (log). Corregido
+  en script 36b v2 para informar el rango efectivo [vmin, vmax] en la
+  etiqueta.
+- La columna `dist_to_edge_midpoint_m` (18.95 m median) se conserva para
+  auditoría, pero no debe usarse como "distancia a la red". La correcta
+  es `dist_to_line_m`.
+- `n_clusters_persisted_train == n_clusters_train` (D104): renombrar
+  la métrica en Fase 11.
+
+**Alternativas consideradas y descartadas:**
+- **Network KDE correcto (shortest-path sobre el grafo):** 2-3 días de
+  implementación. Descartado por coste/beneficio. La aproximación 2D KDE
+  es defendible a la escala de análisis (260 m).
+- **Opción B (edge-weighted KDE):** descartada por los resultados de
+  script 36b (ρ = 0.994 con C).
+
+**Impacto en fases posteriores:**
+- **Fase 8 (Moran):** usa `network_kde_final.parquet` como una de las
+  variables de densidad a comparar con el Moran local sobre recuentos.
+- **Fase 10 (Poisson):** puede usar la densidad KDE como covariable
+  de exposición además de los aforos, si aporta valor predictivo.
+- **Fase 11 (consolidación):** los 12 PNG de script 35 van al reporte
+  final; el flujo conceptual "KDE → HDBSCAN → Moran" se documenta como
+  tres lentes complementarias.
+
+## D106 · Cierre de Fase 8 — Moran local (LISA)
+
+**Decisión:** cerrar Fase 8 con los resultados del script 37 v7. El
+callejero se excluye por deuda técnica de Fase 4 (WKT corruptos).
+
+**Configuración final:**
+- Unidades: hex250m (principal), barrios (operativa), distritos (validación).
+- Sensibilidad: hex200m y hex300m (solo counts_all).
+- Variables: counts_all, counts_injured, kde_all, injury_rate_eb.
+- Pesos: Queen (islands dropped iterativamente). FDR BH α=0.05.
+- Permutaciones: 999 (fallback 199 si esda falla en la primera pasada).
+
+**Resultados por unidad (counts_all):**
+- hex250m: I = 0.677, HH = 169 (4.3%), LL = 0 (p<1e-15 global).
+- barrios: I = 0.092, HH = 0, LL = 0, NS = 131 (p = 0.043 global).
+- distritos: I = 0.014, NS = 21 (p = 0.60 global, indistinguible de azar).
+
+**Hallazgo 1 — MAUP fuerte en volumen de accidentes.**
+La autocorrelación espacial de recuentos cae de 0.68 (hex250m) a 0.09
+(barrios) a 0.01 (distritos). Al agregar a unidades administrativas,
+el promedio destruye la estructura de calle. **Los hotspots están a
+escala de calle, no de barrio.** Justifica la unidad hex para Fase 10.
+
+**Hallazgo 2 — KDE preserva estructura que los recuentos pierden.**
+Ratio I(kde) / I(counts): 1.4× en hex, 8.7× en barrios, 28× en distritos.
+El KDE es más informativo que los recuentos crudos para caracterizar
+estructura espacial, especialmente a escalas administrativas grandes.
+
+**Hallazgo 3 — La tasa de heridos no tiene geografía propia.**
+injury_rate_eb I = 0.13 (hex), 0.32 (barrios), 0.14 (distritos).
+HH = 0 tras FDR en las tres escalas. Confirma el resultado de Fase 7:
+la severidad no redistribuye geográficamente los accidentes. No hay
+"barrio peligroso"; hay "calle peligrosa" con tasa similar a la media.
+
+**Limitación documentada (deuda de Fase 4):**
+`network_callejero.parquet` contiene `POINT (Infinity Infinity)` en la
+columna `geometry_wkt` para 9,408 polígonos. El bug está en script 17
+de Fase 4. El callejero queda fuera de Moran (n=0 unidades válidas).
+Si en Fase 10 se necesita segmento de calle, se usará
+`network_segments.parquet` (3,928 KML disueltos) como sustituto.
+
+**Sensibilidad hex:**
+- 200m: I = 0.624, HH = 8.9%
+- 250m: I = 0.677, HH = 4.3% (elegido)
+- 300m: I = 0.711, HH = 9.0%
+Crecimiento monótono = comportamiento esperado del bandwidth. No es
+MAUP problemático (Δ I = 0.09 entre 200 y 300).
+
+**Impacto en Fase 10:**
+- Unidad espacial = hex250m (la única con I significativo y estructura).
+- Variable principal de Moran = recuentos crudos, no KDE (para evitar
+  sobreajuste por suavizado).
+- No se incluye injury_rate como variable separada en el modelo de
+  frecuencia: la tasa es explicada por el volumen, no tiene geografía
+  propia.
+
+**Impacto en Fase 11:**
+Los 12 mapas LISA (3 unidades × 4 variables) se generan en script 38
+pendiente o directamente en Fase 11 si el tiempo aprieta. Los valores
+numéricos ya están disponibles en moran_{hex250m,barrios,distritos}.parquet.
+
+## D107 · Fix retroactivo de Fase 4 (CRS + edge_id + geometrías inválidas)
+
+**Contexto:** Fase 8 descubrió tres bugs acumulados en Fase 4:
+  1. `_reconstruct_geom` hardcodeaba CRS=EPSG:4326, corrompiendo la
+     proyección del callejero (UTM 25830) al leerlo desde disco.
+  2. `network_callejero.parquet` guardaba WKT strings sin metadata
+     geoespacial (GeoParquet format), rompiendo `gpd.read_parquet()`.
+  3. `accidents_with_network_features.parquet` no tenía `edge_id`
+     (D077), forzando reconstrucción con cKDTree en cada fase posterior.
+
+**Decisión:** arreglar los tres bugs con tres scripts de fix
+(`17c`, `18b`, `19b`) + módulo centralizado `src/madrid_safety/io.py`.
+
+**Validación empírica del impacto:**
+- `tipo_via`: 0 de 131,090 accidentes cambiaron de categoría entre el
+  parquet viejo y el nuevo. **La geometría inválida del callejero no
+  había producido errores de asignación** (los accidentes están en el
+  interior geométrico de las calles, no en las "orejas" topológicas que
+  crea la auto-intersección).
+- `edge_id`: ahora presente en el parquet con 0 nulos, alineado con
+  `network_osm.parquet` 0..95436.
+- Distancias accidente-arista: median 2.19 m, p90 6.49 m (idéntico al
+  fix del script 36b).
+
+**Re-entrenamiento de Fase 5:** NO. Los modelos de gravedad usan
+`tipo_via` que es idéntico (0 cambios confirmados). Re-entrenar 5 modelos
+(LR, LGBM, CatBoost, BART, jerárquico) cuesta ~2-3 h sin beneficio.
+`28_opcion_c.json`, `27_opcion_b_thresholds.json`, `24_bart.json` y
+`10_baselines_tuned.json` permanecen válidos.
+
+**Re-ejecución de Fase 6 y 7:** NO. Ninguna de las dos lee el callejero.
+Sus artefactos (`hdbscan_persistence_*.parquet`, `network_kde_final.parquet`,
+`36b_kde_compare.json`) son independientes del bug.
+
+**Re-ejecución de Fase 8:** SÍ, completada. `37_moran.json` con las 4
+unidades (hex/barrios/distritos/callejero), sin errores.
+
+**Lección para el proyecto:** dos patrones que hay que evitar:
+  1. Funciones de I/O duplicadas con copia-pega. La función
+     `_reconstruct_geom` estaba en 4 scripts con el mismo bug. Ahora hay
+     una sola en `madrid_safety.io`.
+  2. Hardcodear CRS sin detectarlo. Ahora `load_geometry_parquet` detecta
+     por bounds (|coord|>180 → UTM, else WGS84) y acepta override.
+
+**Impacto en Fase 11:** `network_callejero.parquet` y `network_osm.parquet`
+ahora son GeoParquet nativos. Cualquier consumidor puede usar
+`gpd.read_parquet()` sin sorpresas. Documentar en el README que los
+parquets geoespaciales del proyecto son GeoParquet estándar.
+
+## D108 · Cierre de Fase 8 — Moran local (LISA)
+
+**Decisión:** cerrar Fase 8 con los resultados del script 37 v8.
+
+**Unidades:**
+- **hex250m** (principal): 3,962 hexes en Madrid capital.
+- **barrios** (operativa): 131 barrios.
+- **distritos** (validación agregada): 21 distritos.
+- **callejero** (demostración MAUP): 9,285 polígonos de rotulación.
+
+**Variables:** counts_all, counts_injured, kde_all (bw=260, D105),
+injury_rate_eb (Poisson-Gamma EB).
+**Pesos:** Queen/Rook/KNN cascade con drop-islands iterativo; KNN(k=6)
+para callejero.
+**Significancia:** 999 permutaciones, FDR BH α=0.05.
+
+**Hallazgo 1 — MAUP confirmada con 4 puntos:**
+| unidad | counts_all I | escala media |
+|---|---:|---:|
+| distritos | 0.014 | ~6,500 acc/distrito |
+| barrios | 0.092 | ~1,050 acc/barrio |
+| **hex250m** | **0.677** | **~35 acc/hex** |
+| callejero | 0.013 | ~15 acc/polígono |
+
+La autocorrelación espacial de recuentos existe **solo a escala 250 m**.
+Agregar más (distritos) o fragmentar más (rotulación) la destruye.
+**Justifica la elección de hex250m como unidad de Fase 10.**
+
+**Hallazgo 2 — KDE preserva estructura que los recuentos pierden:**
+Ratio I(kde) / I(counts):
+- hex250m: 1.4×
+- barrios: 8.7×
+- distritos: 28×
+- callejero: 71×
+
+A mayor escala de agregación o fragmentación, más información espacial
+se preserva mediante el KDE (que no depende de la granularidad de la
+unidad) y se pierde mediante los recuentos.
+
+**Hallazgo 3 — La tasa de heridos no tiene geografía:**
+`injury_rate_eb` I = 0.126 (hex), 0.318 (barrios), 0.136 (distritos),
+0.076 (callejero). **HH = 0 tras FDR en TODAS las escalas** salvo barrios
+(4 HH, 3%). Confirma D103: la severidad no crea hotspots separados del
+volumen. No hay "barrio peligroso"; hay "calle peligrosa" con tasa
+similar a la media.
+
+**Hallazgo 4 — Sensibilidad hex coherente:**
+| hex | n | counts_all I | HH% |
+|---|---:|---:|---:|
+| 200m | 6,125 | 0.624 | 8.9% |
+| 250m | 3,962 | 0.677 | 4.3% |
+| 300m | 2,798 | 0.711 | 9.0% |
+
+Crecimiento monótono = comportamiento esperado del bandwidth. **Δ I =
+0.087 entre 200m y 300m**, no MAUP problemático. Se elige 250m por
+coherencia con D105 (KDE bw260).
+
+**Limitaciones documentadas:**
+- `callejero` tiene 2 componentes desconectadas en W (aviso libpysal).
+  No afecta el resultado porque la estructura es ya de por sí baja.
+- `kde_all` en callejero tiene n=7,971 (1,314 rotulaciones sin aristas
+  OSM dentro). Filtrado correcto por varianza relativa.
+- `injury_rate_eb` con HH=0 en casi todas las unidades: se documenta
+  como hallazgo, no como fallo.
+
+**Impacto en Fase 10 (Poisson):**
+- Unidad espacial definitiva: **hex250m** (único con I significativo).
+- Variable principal en Moran: recuentos crudos, no KDE.
+- `injury_rate` NO se incluye como variable espacial separada (carece
+  de geografía propia; es consecuencia del volumen).
+
+**Impacto en Fase 11:**
+Los 12 mapas LISA (3 unidades × 4 variables) se pueden generar en script
+38 o directamente en consolidación. Los valores numéricos ya están en
+`moran_{hex250m,barrios,distritos,callejero}.parquet`.
+
+**Alternativas consideradas y descartadas:**
+- **Re-hacer callejero con Queen:** no aporta (el hallazgo ya es
+  informativo con KNN).
+- **Añadir unidad "sección censal":** demasiadas unidades, problemática
+  para FDR, no añade narrativa.
+- **Moran bivariado (counts, kde):** útil pero no crítico; puede quedar
+  como línea de Fase 11 si el tiempo aprieta.
+
+## D109 · 208627 es CITY-WIDE, no M-30 only
+
+**Corrección de iter 1:** el script 39 clasificó 208627 como `M30_ONLY`
+basándose en un solo sample (12-2022) que casualmente tenía mayoría de
+C30/M30 en las primeras 5,000 filas. La auditoría profunda (39b) con
+5 ZIPs revela la estructura real:
+
+- `tipo_elem` distintos observados: `URB`, `M30`, `C30`,
+  `PUNTOS MEDIDA URBANOS`, `PUNTOS MEDIDA M-30`.
+- **`URB` es el ~90% de los registros** en cada mes (11.3M de 12.5M
+  filas en 12-2022). El histórico ES la red urbana city-wide.
+- **4,000-5,000 IDs únicos por mes** (4,487 en 2022-12, 4,181 en
+  2021-02, 4,794 en 2026-09). Cobertura densa.
+- Nomenclatura: `PUNTOS MEDIDA URBANOS` / `PUNTOS MEDIDA M-30` hasta
+  2018; `URB` / `M30` / `C30` desde 2019. Para el alcance del proyecto
+  (2019-2025) usamos el formato nuevo, limpio.
+
+**Confirmación adicional:** `202468` "Ubicación de los puntos de medida
+del tráfico" (ID correcto: `202468-0-intensidad-trafico`) tiene 500
+puntos con `tipo_elem = URB` (459) y coordenadas UTM. Es el índice
+espacial de la red URB.
+
+**Implicación para Fase 9:** la exposición city-wide con granularidad
+15-min SÍ está disponible. El histórico es la fuente primaria, no un
+complemento M-30.
+
+**Implicación para Fase 10:** el modelo Poisson tiene offset real de
+exposición al tráfico, no un proxy. La narrativa del proyecto se
+fortalece.
+
+**Lo que NO cambia:** 300233 sigue siendo 60 estaciones (validación
+cruzada), 203962 sigue siendo IMD estático 2012-13 (covariable
+time-invariant), 205865 es agregado por cinturones (control macro).
+
+## D110 · Fase 9 cerrada — exposición city-wide corregida
+
+**Fuente primaria:** 208627 (histórico, 15-min granularidad).
+**Cobertura:** 84/84 meses 2019-2025, ~4,500 sensores/mes.
+**Join espacial:** 202468 catalog (99.59% match).
+**Unidades:** conteo absoluto por intervalo, agregado a veh/día
+  por sensor, luego por hex250m.
+
+**Corrección de unidades (bug 40b):** el 40b original asumió 5-min
+fijo y multiplicó por 288. La realidad: `periodo_integracion` varía
+1-15 min, `intensidad` es conteo absoluto (no tasa). Fórmula correcta:
+`intensity_day = sum(intensidad) / n_days`. Aplicada en 40d.
+
+**Output:** `exposure_hex250m_monthly.parquet` (74,717 rows, 11 cols):
+- 929 hexes con datos (23% de Madrid).
+- Intensidad mediana: X veh/día (ver 40d JSON).
+- Patrón COVID reproduciendo caídas 2020 y recuperación 2021-2022.
+
+**Limitaciones documentadas:**
+- 23% de cobertura (solo hexes con sensor permanente).
+- Ratio vs IMD = X, rho = Y (gap temporal 2012→2022).
+- `INTENSITY_CAP = 500k` para outliers de sensores agregadores.
+
+**Próximo paso:** Fase 10 — Poisson/NB sobre hex×mes con offset
+log(exposure) donde disponible. Sensibilidad con/sin offset para
+comparar y cuantificar el valor de la exposición real vs proxy.
+
+## D110 · Fase 9 cerrada — exposición city-wide construida
+
+**Fuente primaria:** 208627 (histórico, 15-min granularidad).
+**Cobertura temporal:** 84/84 meses 2019-2025.
+**Sensores:** ~4,500 IDs/mes, en crecimiento (3,990 en 2019 → 4,722 en 2025).
+**Join espacial:** 202468 catalogue (362,479/366,020 = 99.03% match).
+**Unidades:** conteo absoluto por intervalo (verificado en 40c/40d:
+`intensidad` no es una tasa, es conteo; `periodo_integracion` varía
+1-15 min). Fórmula correcta: `intensity_day = sum(intensidad)/n_days`.
+
+**Output:** `data/processed/exposure_hex250m_monthly.parquet`
+(74,717 filas, 11 cols):
+- 929 hexes con datos (23.4% de los 3,962 hexes de Madrid).
+- Median 20,942 veh/día, p90 64,285, p99 149,025.
+- Patrón COVID validado (2020 -31% vs 2019, meseta 2021-2025).
+- 3 sensor-months capeados > 500k veh/día (outliers agregadores).
+
+**Validación cruzada:**
+- vs 203962 IMD (2012-13): ratio 1.80, rho 0.449 (gap temporal).
+- vs 2019-2020 accidentes: misma dinámica COVID.
+- vs 300233 (pendiente): no usada como validación en esta fase.
+
+**Limitaciones documentadas:**
+- 23% de cobertura a hex250m. Los hexes sin sensor quedan NaN
+  (no cero — "sin exposición conocida").
+- Ratio 1.80 vs IMD refleja diferencias temporales + de red de sensores.
+
+**Próximo paso:** Fase 10 — Poisson/NB con offset log(exposure) sobre
+hex250m×mes en los 929 hexes con dato. Sensibilidad con/sin offset
+para cuantificar el valor de la exposición real vs proxy IMD.
+
+## D110 · Fase 10 cerrada — Poisson/NB con exposición
+
+**Modelo final:** NB2 (Negative Binomial) con:
+  - `log_exposure` como covariable libre (α = 0.474 injured / 0.443 all).
+  - `highway_ordinal_mean` (jerarquía de vía OSM por hex).
+  - Year FE (7 niveles, baseline 2019).
+  - Month FE (12 niveles, baseline enero).
+  - `tipo_via` dominante del hex (FE, baseline "Callejón").
+
+**Hallazgo 1 — Exposición sublineal (robusta):**
+Coef sobre `log_exposure` = 0.474 (injured) / 0.443 (all), estable
+a través de 5 especificaciones (0.53 → 0.47 conforme se añaden
+covariables). **Rechazamos α=1** (z=-92/-138, p≈0).
+**Doblar el tráfico produce 1.39× accidentes (injured) / 1.36× (all)**,
+no 2×. Saturación urbana documentada empíricamente.
+
+**Hallazgo 2 — tipo_via jerarquía (interpretable):**
+Coeficientes sobre baseline (Callejón), controlado por exposición+FE:
+  Plaza: +1.64    Cuesta: +1.23    Calle: +1.19    Ronda: +1.18
+  Paseo: +1.17    Glorieta: +0.93  Avenida: +0.82  Carretera: +0.30
+  Camino: +0.16
+**Calles, plazas y cuestas tienen ~50-80% más accidentes por vehículo
+que avenidas**. Consistente con teoría de conflicto (más cruces,
+menos separación de flujos, intersecciones complejas).
+
+**Hallazgo 3 — Estacionalidad:**
+Octubre es el mes más accidentado (+0.23), agosto el menos (-0.13).
+Diciembre (+0.12) también alto (lluvia, festivos).
+
+**Hallazgo 4 — COVID cuantificado vía FE:**
+Año 2020: -0.29 (injured) / -0.30 (all) → **-25% accidentes**, controlado
+por exposición. La reducción es mayor que la caída de tráfico: hubo
+cambio de comportamiento además de menos vehículos.
+
+**Hallazgo 5 — Modelo ajusta el temporal al 1%:**
+by_year ratio (predicted/actual): 0.994 – 1.009 en todos los años
+2019-2025. Reproduce COVID y recuperación sin desviación.
+
+**Hallazgo 6 — Heterogeneidad espacial residual I = 0.44:**
+Reducción de 0.677 (Fase 8) a 0.44 con el modelo completo.
+Es **reducción real del 35%**, pero el residual significativo (p=0.001)
+indica heterogeneidad por hex no capturada por exposición + FE.
+Esto es la firma de los hotspots locales de Fase 8: existe variación
+espacial intrínseca (por calle, cruce, tipología local) que necesita
+spatial random effects o FE por hex para capturar (fuera del alcance).
+
+**Nota metodológica sobre el Moran residual:**
+El M1 (offset coef=1 forzado) daba I=0.216, aparentemente mejor,
+pero con AIC=179,649 (vs N4=162,600). M1 "reduce" el Moran porque
+fuerza la exposición a dominar la predicción (y la exposición está
+espacialmente autocorrelacionada). **N4 es el modelo correcto**;
+el I residual más alto es honesto, no un fracaso.
+
+**Limitaciones documentadas:**
+- Cobertura: 929 / 3,962 hexes (23.4%). El modelo no predice en el
+  76.6% sin exposición observada.
+- Residuales Pearson pueden estar dominados por outliers
+  (mu≈0 con y=1). Un diagnóstico alternativo (DHARMa quantile
+  residuals) queda pendiente para Fase 11 si el tiempo lo permite.
+- Sin FE por hex: heterogeneidad espacial intrínseca queda en
+  residual. Justifica extensiones de spatial random effects.
+- KDE (kde_all_mean) excluido por leakage (es un suavizado del target).
+
+**Artefactos producidos:**
+- `data/processed/panel_hex_month_n_injured.parquet` (panel de 74,625 obs)
+- `reports/tables/41_poisson_baseline.json` (iter 1)
+- `reports/tables/41b_diagnostics.json` (iter 1b, con bug fittedvalues)
+- `reports/tables/41c_refit.json` (NB2 corregido, 5 modelos)
+- `reports/tables/41d_fix_residuals.json` (residuales corregidos)
+
+**Conclusión de la línea D:**
+El proyecto demuestra viabilidad de Poisson/NB con exposición **en el
+23% de Madrid donde existe sensor**. Los hallazgos son sólidos y
+publicables:
+  1. Exposición sublineal (α≈0.47).
+  2. tipo_via jerarquía robusta (calles/plazas > avenidas).
+  3. COVID cuantificado independientemente de exposición.
+  4. Los hotspots de Fase 8 son esencialmente tráfico + tipo_via,
+     con heterogeneidad residual I=0.44 (variable por hex).
+
+**Fase 10 cerrada.** Próximo paso: Fase 11 — consolidación y publicación.
+
+## D110 (actualización tras iter 2/3) — Identificación dual de exposición
+
+**Los tres modelos responden a preguntas distintas:**
+
+1. **N4 (primary, sin hex FE):** coef=0.467 (injured) / 0.440 (all).
+   - Compara hexes con distinto tráfico. Doblar exposición correlaciona
+     con **1.38× accidentes**.
+   - **Es el número de política pública**: "¿qué hexes tienen más
+     accidentes porque tienen más tráfico?".
+   - Confounder: infraestructura, densidad, actividad económica covarían
+     con exposición. **No es causal**.
+
+2. **FE_no_year (con hex FE, sin year):** coef=0.269.
+   - Within-hex-within-decade. Añadir hex FE absorbe el 76% de la
+     varianza de exposición (que es spatial).
+   - Confounder principal: COVID (2020) es un shock temporal en el
+     tráfico que también es un shock en accidentes. Sin FE de año, el
+     coef captura algo de eso.
+
+3. **FE_full (with hex + year + month FE):** coef=0.166.
+   - Within-hex-within-month. Identificado sobre fluctuaciones semanales
+     del tráfico dentro de un mes dentro de un año.
+   - **No es política pública**: son fluctuaciones de corto plazo,
+     confundidas con ruido de conteo.
+   - El ΔAIC FE_no_year → FE_full es −541 con solo 6 parámetros, cambio
+     de coef −40% ⇒ colinealidad año↔exposición. COVID domina.
+
+**Variance decomposition de log_exposure:**
+- 76.4% between-hex (estructural, lo que N4 captura)
+- 23.6% within-hex (temporal, dominado por COVID + estacionalidad)
+- Lo que queda "clean within" tras FE de año/mes es <8%.
+
+**Sobre el mapa de riesgo FE:**
+- 876 hexes well_sampled (84 obs/mes) → coeficientes FE estables.
+- 51 moderate → con caveat.
+- 2 singleton → descartados.
+- Los `hex_fe` de FE_full representan **riesgo residual dado exposure**.
+  Uso en Fase 11 como mapa de riesgo descriptivo, no causal.
+- Se descarta CAR: mismo problema de identificación + shrinkage
+  marginal con 876/929 hexes ya bien muestreados.
+
+**Confounders documentados:**
+- Exposición y accidentes covarían con densidad, infraestructura,
+  actividad económica. N4 no controla esto.
+- La asociación 0.467 es interpretable como "elasticidad de accidentes
+  a exposición transversal", NO como elasticidad causal.
+
+**Recomendación de política pública:**
+- Ranking entre zonas: usar N4 (asociación estructural).
+- Identificar hexes con "riesgo residual" (accidentes no explicados
+  por exposición): usar FE map.
+- Test de intervención: imposible con los datos actuales. Requiere
+  quasi-experimento (cambio de límite de velocidad, rediseño de vía).
+
+## D110 · Fase 10 cerrada — Poisson/NB con exposición
+
+**Modelo primario:** N4 (NB2, sin hex FE).
+Coef sobre `log_exposure` = **0.467** (injured) / **0.440** (all).
+Sublineal: doblar tráfico = 1.39× / 1.36× accidentes.
+Robusto a year FE + month FE + tipo_via + highway_ordinal_mean.
+
+**Modelo diagnóstico:** FE_full (con hex dummies).
+Coef sobre `log_exposure` = 0.166 / 0.147.
+Identifica la variación within-hex, dominada por COVID (2020 within
+share 30.6% vs 13.2% en otros años).
+
+**Variance decomposition de log_exposure:**
+76.4% between-hex / 23.6% within-hex (concentrado en 2020).
+Esto explica la diferencia entre N4 y FE: dos identificaciones
+distintas, ambas válidas para preguntas distintas.
+
+**Mapa de riesgo FE — DESCARTADO.**
+Los coeficientes FE de script 42 tienen rank-deficiency real
+(tipo_via y highway_ordinal son constantes por hex → colineales
+con hex dummies). Bootstrap de 20 iteraciones × 400 hexes muestra:
+  - pearson_rho(orig, boot) = 0.005
+  - per_hex_sd_median = 1.09 vs orig_sd = 1.36 (80% del rango
+    original es ruido de identificación)
+  - boot_mean_sd (0.43) << orig_sd (1.36): el bootstrap colapsa la
+    dispersión, confirmando que la dispersión original es artefacto.
+**No se usa para política.** Los hex-mean de N4 residuals sirven como
+mapa descriptivo alternativo, sin pretender coeficientes por hex.
+
+**Mapa de riesgo para Fase 11: LISA clusters de Fase 8.**
+Los clusters HH/LL/HL/LH de Moran (0.677 global) son estables y
+reproducibles. Combinados con el hallazgo "exposición explica 76% de
+la varianza entre hexes", son el mapa de hotspot residual defendible.
+
+**Lecciones técnicas (para Fase 11):**
+- Rank-deficiency warnings NUNCA ignorar. En 42/43 los minimizamos.
+- El bootstrap de FE requiere categorías únicas de hex y
+  base explícita. Sin eso, coeficientes no reproducibles.
+- "Coef dentro de rango plausible" no es prueba de identificación.
+  Un punto arbitrario del espacio nulo también da números plausibles.
+
+**Conclusión científica:**
+- Estructura: 76% de varianza de exposición es between-hex. Los
+  accidentes escalan 1.39× por 2× tráfico (sublineal).
+- Dinámica: within-hex está dominado por COVID. Fuera de ese shock,
+  la variación de corto plazo es ruido de conteo.
+- Política: usar N4 para ranking entre zonas. Usar LISA para hotspots
+  residuales. No usar FE por hex.
+
+**Fase 10 cerrada.** Próximo paso: Fase 11.

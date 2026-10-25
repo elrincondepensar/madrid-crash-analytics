@@ -1,0 +1,174 @@
+{
+  "n_accidents_total": 137295,
+  "match_rates_by_threshold": {
+    "50m": {
+      "n_matched": 87088,
+      "share": 0.6343
+    },
+    "100m": {
+      "n_matched": 101950,
+      "share": 0.7426
+    },
+    "200m": {
+      "n_matched": 118882,
+      "share": 0.8659
+    },
+    "300m": {
+      "n_matched": 126320,
+      "share": 0.9201
+    },
+    "500m": {
+      "n_matched": 131624,
+      "share": 0.9587
+    },
+    "1000m": {
+      "n_matched": 135157,
+      "share": 0.9844
+    }
+  },
+  "match_rate_100m_by_year": {
+    "2019": 0.7553,
+    "2020": 0.7319,
+    "2021": 0.7441,
+    "2022": 0.7453,
+    "2023": 0.7349,
+    "2024": 0.7429,
+    "2025": 0.7398
+  },
+  "match_rate_100m_by_district": [
+    {
+      "distrito": "ARGANZUELA",
+      "mean": 0.9362,
+      "size": 6362
+    },
+    {
+      "distrito": "BARAJAS",
+      "mean": 0.2229,
+      "size": 2651
+    },
+    {
+      "distrito": "CARABANCHEL",
+      "mean": 0.7726,
+      "size": 8844
+    },
+    {
+      "distrito": "CENTRO",
+      "mean": 0.8272,
+      "size": 8224
+    },
+    {
+      "distrito": "CHAMARTÍN",
+      "mean": 0.9091,
+      "size": 9445
+    },
+    {
+      "distrito": "CHAMBERÍ",
+      "mean": 0.8701,
+      "size": 6658
+    },
+    {
+      "distrito": "CIUDAD LINEAL",
+      "mean": 0.8182,
+      "size": 8462
+    },
+    {
+      "distrito": "FUENCARRAL-EL PARDO",
+      "mean": 0.7339,
+      "size": 7490
+    },
+    {
+      "distrito": "HORTALEZA",
+      "mean": 0.6053,
+      "size": 5523
+    },
+    {
+      "distrito": "LATINA",
+      "mean": 0.7346,
+      "size": 6677
+    },
+    {
+      "distrito": "MONCLOA-ARAVACA",
+      "mean": 0.7188,
+      "size": 7497
+    },
+    {
+      "distrito": "MORATALAZ",
+      "mean": 0.7555,
+      "size": 3808
+    },
+    {
+      "distrito": "PUENTE DE VALLECAS",
+      "mean": 0.6477,
+      "size": 10035
+    },
+    {
+      "distrito": "RETIRO",
+      "mean": 0.9016,
+      "size": 6644
+    },
+    {
+      "distrito": "SALAMANCA",
+      "mean": 0.8895,
+      "size": 9999
+    },
+    {
+      "distrito": "SAN BLAS-CANILLEJAS",
+      "mean": 0.6393,
+      "size": 6642
+    },
+    {
+      "distrito": "TETUÁN",
+      "mean": 0.8598,
+      "size": 6269
+    },
+    {
+      "distrito": "USERA",
+      "mean": 0.6502,
+      "size": 5332
+    },
+    {
+      "distrito": "VICÁLVARO",
+      "mean": 0.3741,
+      "size": 2454
+    },
+    {
+      "distrito": "VILLA DE VALLECAS",
+      "mean": 0.2095,
+      "size": 3785
+    },
+    {
+      "distrito": "VILLAVERDE",
+      "mean": 0.5016,
+      "size": 4490
+    }
+  ],
+  "match_rate_100m_by_severity": [
+    {
+      "severity": "fatal",
+      "mean": 0.785,
+      "size": 200
+    },
+    {
+      "severity": "minor",
+      "mean": 0.7651,
+      "size": 48098
+    },
+    {
+      "severity": "no_injury",
+      "mean": 0.7254,
+      "size": 74835
+    },
+    {
+      "severity": "serious",
+      "mean": 0.756,
+      "size": 14162
+    }
+  ],
+  "unmatched_distance_stats": {
+    "n": 35345,
+    "p50": 207.41294476599288,
+    "p90": 748.8500869572227,
+    "p99": 3293.2344987701063,
+    "max": 13399.566555995874
+  }
+}

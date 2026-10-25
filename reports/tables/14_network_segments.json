@@ -1,0 +1,21 @@
+{
+  "n_segments": 3928,
+  "n_missing_name": 3928,
+  "n_missing_description": 3928,
+  "n_points_stats": {
+    "min": 2,
+    "median": 6.0,
+    "max": 502,
+    "mean": 13.8
+  },
+  "bbox": {
+    "min_lon": -3.83698,
+    "max_lon": -3.58063,
+    "min_lat": 40.33156,
+    "max_lat": 40.51726
+  },
+  "names_sample": [],
+  "descriptions_sample": [],
+  "n_unique_names": 0,
+  "duplicated_names": 3927
+}

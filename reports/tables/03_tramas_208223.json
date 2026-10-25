@@ -1,0 +1,26 @@
+{
+  "n_resources": 3,
+  "resources": [
+    {
+      "name": "208223-0-trafico-intensidad-tramas",
+      "url": "https://informo.madrid.es/informo/tmadrid/INTENSIDADES.kml",
+      "format": "KML",
+      "size": null,
+      "note": "not CSV — may be a service or archive"
+    },
+    {
+      "name": "208223-1-trafico-intensidad-tramas",
+      "url": "https://informo.madrid.es/informo/tmadrid/INTENS_POLIG.kml",
+      "format": "KML",
+      "size": null,
+      "note": "not CSV — may be a service or archive"
+    },
+    {
+      "name": "208223-2-trafico-intensidad-tramas",
+      "url": "https://datos.madrid.es/dataset/208223-0-trafico-intensidad-tramas/resource/208223-2-trafico-intensidad-tramas/download/estructura_mapa_tramas_intensidad_trc3a1fico.pdf",
+      "format": "PDF",
+      "size": 255069,
+      "note": "not CSV — may be a service or archive"
+    }
+  ]
+}

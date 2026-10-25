@@ -1,0 +1,17 @@
+{
+  "n_csv_resources": 96,
+  "samples": [
+    {
+      "name": "202468-0-intensidad-trafico-csv",
+      "error": "Error tokenizing data. C error: Expected 1 fields in line 19, saw 2\n"
+    },
+    {
+      "name": "202468-1-intensidad-trafico-csv",
+      "error": "'utf-8' codec can't decode byte 0xba in position 326: invalid start byte"
+    },
+    {
+      "name": "202468-2-intensidad-trafico-csv",
+      "error": "'utf-8' codec can't decode byte 0xba in position 1597: invalid start byte"
+    }
+  ]
+}

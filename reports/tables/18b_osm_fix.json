@@ -1,0 +1,23 @@
+{
+  "n_input": 95437,
+  "n_output": 95437,
+  "n_repaired": 0,
+  "crs": 4326,
+  "geom_type_distribution": {
+    "LineString": 95437
+  },
+  "columns": [
+    "osm_id",
+    "u",
+    "v",
+    "key",
+    "highway",
+    "name",
+    "maxspeed_kmh",
+    "lanes_n",
+    "oneway",
+    "length_m",
+    "geometry"
+  ],
+  "range_index_preserved": true
+}

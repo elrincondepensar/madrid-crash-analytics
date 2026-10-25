@@ -1,0 +1,28 @@
+{
+  "kmz_size_bytes": 293084,
+  "kmz_files": [
+    "doc.kml"
+  ],
+  "kmz_kml": {
+    "n_placemarks": 1961,
+    "samples": [
+      {
+        "name": "Pelícano - Argüeso",
+        "description": "",
+        "geometry_types": [
+          "Point"
+        ],
+        "n_coordinate_tuples": 0
+      },
+      {
+        "name": "Viejo de Leganés (Camino)- Besolla",
+        "description": "",
+        "geometry_types": [
+          "Point"
+        ],
+        "n_coordinate_tuples": 0
+      }
+    ]
+  },
+  "xlsx_error": "`Import openpyxl` failed.  Use pip or conda to install the openpyxl package."
+}

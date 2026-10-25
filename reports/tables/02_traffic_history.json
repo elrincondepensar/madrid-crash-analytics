@@ -1,0 +1,69 @@
+{
+  "attempts": [
+    {
+      "method": "package_show(208627-0-...)",
+      "n_resources": 162
+    },
+    {
+      "method": "package_search",
+      "n_results": 11,
+      "top_results": [
+        {
+          "name": "202468-0-intensidad-trafico",
+          "title": "Tráfico. Ubicación de los puntos de medida del tráfico",
+          "n_resources": 307
+        },
+        {
+          "name": "208627-0-transporte-ptomedida-historico",
+          "title": "Tráfico. Histórico de datos del tráfico desde 2013",
+          "n_resources": 162
+        },
+        {
+          "name": "300437-0-covid-trafico-historico-semanal",
+          "title": "COVID-19. Histórico de datos del tráfico (datos semanales)",
+          "n_resources": 20
+        },
+        {
+          "name": "212451-0-trafico-calle30-historico",
+          "title": "Tráfico Calle 30. Histórico de datos de usuarios que han circulado desde 2013",
+          "n_resources": 2
+        },
+        {
+          "name": "202087-0-trafico-intensidad",
+          "title": "Tráfico. Datos del tráfico en tiempo real",
+          "n_resources": 4
+        },
+        {
+          "name": "212132-0-trafico-calle30-estimaciones",
+          "title": "Tráfico Calle 30. Estimaciones de tráfico entre las diferentes entradas y salidas",
+          "n_resources": 4
+        },
+        {
+          "name": "208223-0-trafico-intensidad-tramas",
+          "title": "Tráfico. Mapa de tramas de intensidad del tráfico",
+          "n_resources": 3
+        },
+        {
+          "name": "214132-0-trafico-calle30-webservice-e-s",
+          "title": "Tráfico Calle 30. Estimaciones de tráfico entre entradas y salidas (Webservice)",
+          "n_resources": 2
+        },
+        {
+          "name": "300340-0-trafico-velocidad",
+          "title": "Tráfico. Velocidad media diaria anual por tramos",
+          "n_resources": 13
+        },
+        {
+          "name": "203962-0-trafico-imd",
+          "title": "Tráfico. Intensidad media diaria anual por tramos",
+          "n_resources": 21
+        }
+      ]
+    },
+    {
+      "method": "html_scrape",
+      "status_code": 200,
+      "links_found": []
+    }
+  ]
+}

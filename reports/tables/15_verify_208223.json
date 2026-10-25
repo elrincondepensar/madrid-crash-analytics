@@ -1,0 +1,7 @@
+{
+  "n_placemarks": 3928,
+  "n_placemarks_with_linestring": 3928,
+  "n_placemarks_with_coords": 3928,
+  "n_placemarks_with_name": 0,
+  "first_placemark_xml": "<Placemark xmlns=\"http://earth.google.com/kml/2.2\">\n      <styleUrl>#Color2</styleUrl>\n      <LineString>\n        <coordinates>-3.691893,40.389298,0 -3.690911,40.387566,0 </coordinates>\n      </LineString>\n    </Placemark>\n    \n"
+}

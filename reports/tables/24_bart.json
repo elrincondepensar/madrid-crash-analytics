@@ -1,0 +1,122 @@
+{
+  "mode": "full",
+  "test": {
+    "kappa_q": 0.4001866187742732,
+    "f1_macro": 0.33452435213680126,
+    "mae_ord": 0.3508326797988652,
+    "pr_auc_fatal": 0.006962739455677674,
+    "pr_auc_macro": 0.41533826227703324,
+    "roc_auc_macro": 0.7868008026832628,
+    "recall": {
+      "no_injury": 0.9178782553123502,
+      "minor": 0.4804255319148936,
+      "serious": 0.00048146364949446316,
+      "fatal": 0.0
+    },
+    "confusion": {
+      "labels": [
+        "no_injury",
+        "minor",
+        "serious",
+        "fatal"
+      ],
+      "matrix": [
+        [
+          11490,
+          1028,
+          0,
+          0
+        ],
+        [
+          3663,
+          3387,
+          0,
+          0
+        ],
+        [
+          763,
+          1313,
+          1,
+          0
+        ],
+        [
+          11,
+          21,
+          0,
+          0
+        ]
+      ]
+    },
+    "ranking_fatal": {
+      "n_target": 32,
+      "by_k": {
+        "k=2%": {
+          "k": 434,
+          "tp": 4,
+          "precision": 0.0092,
+          "recall": 0.125,
+          "lift": 6.243
+        },
+        "k=5%": {
+          "k": 1084,
+          "tp": 9,
+          "precision": 0.0083,
+          "recall": 0.2812,
+          "lift": 5.624
+        },
+        "k=10%": {
+          "k": 2168,
+          "tp": 13,
+          "precision": 0.006,
+          "recall": 0.4062,
+          "lift": 4.062
+        }
+      }
+    }
+  },
+  "bootstrap": {
+    "Lift@2": {
+      "median": 6.243,
+      "ci95_low": 1.561,
+      "ci95_high": 13.319
+    },
+    "Lift@5": {
+      "median": 5.5355,
+      "ci95_low": 2.5304,
+      "ci95_high": 9.511075
+    },
+    "Recall@5": {
+      "median": 0.27685,
+      "ci95_low": 0.12652000000000002,
+      "ci95_high": 0.47562999999999994
+    },
+    "Recall@10": {
+      "median": 0.4062,
+      "ci95_low": 0.2371475,
+      "ci95_high": 0.5797374999999998
+    },
+    "PR_AUC_fatal": {
+      "median": 0.007703894771882727,
+      "ci95_low": 0.00396256790533823,
+      "ci95_high": 0.0166093424907842
+    }
+  },
+  "fits": {
+    "no_injury": {
+      "n_positive_train": 39143,
+      "fit_seconds": 677.7
+    },
+    "minor": {
+      "n_positive_train": 27201,
+      "fit_seconds": 642.3
+    },
+    "serious": {
+      "n_positive_train": 7784,
+      "fit_seconds": 636.9
+    },
+    "fatal": {
+      "n_positive_train": 116,
+      "fit_seconds": 606.6
+    }
+  }
+}

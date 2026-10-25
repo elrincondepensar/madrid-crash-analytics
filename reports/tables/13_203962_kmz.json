@@ -1,0 +1,77 @@
+{
+  "url": "https://datos.madrid.es/dataset/203962-0-trafico-imd/resource/203962-3-trafico-imd-kmz/download/203962-3-trafico-imd-kmz",
+  "n_files": 1,
+  "kml_names": [
+    "doc.kml"
+  ],
+  "kml_size_bytes": 4570504,
+  "root_tag": "{http://www.opengis.net/kml/2.2}kml",
+  "nsmap": {
+    "(default)": "http://www.opengis.net/kml/2.2",
+    "gx": "http://www.google.com/kml/ext/2.2",
+    "kml": "http://www.opengis.net/kml/2.2",
+    "atom": "http://www.w3.org/2005/Atom"
+  },
+  "element_counts": {
+    "SimpleData": 70596,
+    "styleUrl": 3942,
+    "name": 2965,
+    "visibility": 2964,
+    "Placemark": 1961,
+    "ExtendedData": 1961,
+    "SchemaData": 1961,
+    "Point": 1961,
+    "coordinates": 1961,
+    "Folder": 1003,
+    "href": 40,
+    "SimpleField": 36,
+    "color": 26,
+    "Style": 20,
+    "IconStyle": 20,
+    "scale": 20,
+    "Icon": 20,
+    "hotSpot": 20,
+    "LabelStyle": 20,
+    "ListStyle": 20,
+    "ItemIcon": 20,
+    "Pair": 20,
+    "key": 20,
+    "open": 18,
+    "StyleMap": 10,
+    "kml": 1,
+    "Document": 1,
+    "Schema": 1
+  },
+  "samples": [
+    {
+      "name": "Pelícano - Argüeso",
+      "description": null,
+      "extended_data": [],
+      "geometry_tags": [
+        "Point"
+      ],
+      "n_coordinate_tuples": 1,
+      "first_coord": "-3.73088,40.38273,0"
+    },
+    {
+      "name": "Viejo de Leganés (Camino)- Besolla",
+      "description": null,
+      "extended_data": [],
+      "geometry_tags": [
+        "Point"
+      ],
+      "n_coordinate_tuples": 1,
+      "first_coord": "-3.73403333,40.37611667,0"
+    },
+    {
+      "name": "Oporto (Avenida) - Portalegre",
+      "description": null,
+      "extended_data": [],
+      "geometry_tags": [
+        "Point"
+      ],
+      "n_coordinate_tuples": 1,
+      "first_coord": "-3.72188,40.38483,0"
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "accidents_2019": {
+    "source": "accidents_2019",
+    "url": "https://datos.madrid.es/egob/catalogo/300228-28-accidentes-trafico-detalle.csv",
+    "schema": {
+      "columns": [
+        "num_expediente;fecha;hora;localizacion;numero;cod_distrito;distrito;tipo_accidente;estado_meteorológico;tipo_vehiculo;tipo_persona;rango_edad;sexo;cod_lesividad;lesividad;coordenada_x_utm;coordenada_y_utm;positiva_alcohol;positiva_droga"
+      ],
+      "dtypes": {
+        "num_expediente;fecha;hora;localizacion;numero;cod_distrito;distrito;tipo_accidente;estado_meteorológico;tipo_vehiculo;tipo_persona;rango_edad;sexo;cod_lesividad;lesividad;coordenada_x_utm;coordenada_y_utm;positiva_alcohol;positiva_droga": "str"
+      },
+      "null_counts": {
+        "num_expediente;fecha;hora;localizacion;numero;cod_distrito;distrito;tipo_accidente;estado_meteorológico;tipo_vehiculo;tipo_persona;rango_edad;sexo;cod_lesividad;lesividad;coordenada_x_utm;coordenada_y_utm;positiva_alcohol;positiva_droga": 0
+      },
+      "n_rows_sampled": 5
+    },
+    "status": "ok"
+  },
+  "accidents_2024": {
+    "source": "accidents_2024",
+    "url": "https://datos.madrid.es/egob/catalogo/300228-33-accidentes-trafico-detalle.csv",
+    "status": "error",
+    "error": "404 Client Error: Not Found for url: https://datos.madrid.es/egob/catalogo/300228-33-accidentes-trafico-detalle.csv"
+  },
+  "permanent_counts": {
+    "source": "permanent_counts",
+    "url": "https://datos.madrid.es/egob/catalogo/300233-0-aforo-trafico-permanentes.csv",
+    "status": "error",
+    "error": "404 Client Error: Not Found for url: https://datos.madrid.es/egob/catalogo/300233-0-aforo-trafico-permanentes.csv"
+  },
+  "traffic_history": {
+    "source": "traffic_history",
+    "url": "https://datos.madrid.es/egob/catalogo/208627-0-transporte-ptomedida-historico.csv",
+    "status": "error",
+    "error": "404 Client Error: Not Found for url: https://datos.madrid.es/egob/catalogo/208627-0-transporte-ptomedida-historico.csv"
+  },
+  "street_directory": {
+    "source": "street_directory",
+    "url": "https://datos.madrid.es/egob/catalogo/200075-4-callejero.csv",
+    "status": "error",
+    "error": "'utf-8' codec can't decode byte 0xed in position 12: invalid continuation byte"
+  }
+}

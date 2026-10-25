@@ -1,0 +1,162 @@
+{
+  "n_resources": 307,
+  "names_sample": [
+    "202468-0-intensidad-trafico-csv",
+    "202468-1-intensidad-trafico-csv",
+    "202468-2-intensidad-trafico-csv",
+    "202468-3-intensidad-trafico-csv",
+    "202468-4-intensidad-trafico-csv",
+    "202468-5-intensidad-trafico-csv",
+    "202468-6-intensidad-trafico-zip",
+    "202468-7-intensidad-trafico-zip",
+    "202468-8-intensidad-trafico-zip",
+    "202468-9-intensidad-trafico-zip",
+    "202468-10-intensidad-trafico-zip",
+    "202468-11-intensidad-trafico-xlsx",
+    "202468-12-intensidad-trafico-xlsx",
+    "202468-13-intensidad-trafico-xlsx",
+    "202468-14-intensidad-trafico-xlsx",
+    "202468-15-intensidad-trafico-xlsx",
+    "202468-16-intensidad-trafico-xlsx",
+    "202468-17-intensidad-trafico-zip",
+    "202468-18-intensidad-trafico-xlsx",
+    "202468-19-intensidad-trafico-zip",
+    "202468-20-intensidad-trafico-zip",
+    "202468-21-intensidad-trafico-zip",
+    "202468-22-intensidad-trafico-zip",
+    "202468-23-intensidad-trafico-zip",
+    "202468-24-intensidad-trafico-csv",
+    "202468-25-intensidad-trafico-csv",
+    "202468-26-intensidad-trafico-csv",
+    "202468-27-intensidad-trafico-csv",
+    "202468-28-intensidad-trafico-csv",
+    "202468-29-intensidad-trafico-csv"
+  ],
+  "csv_loaded": [
+    {
+      "name": "202468-0-intensidad-trafico-csv",
+      "columns": [
+        "tipo_elem",
+        "distrito",
+        "id",
+        "cod_cent",
+        "nombre",
+        "utm_x",
+        "utm_y",
+        "longitud",
+        "latitud"
+      ],
+      "dtypes": {
+        "tipo_elem": "str",
+        "distrito": "int64",
+        "id": "int64",
+        "cod_cent": "int64",
+        "nombre": "str",
+        "utm_x": "float64",
+        "utm_y": "float64",
+        "longitud": "float64",
+        "latitud": "float64"
+      }
+    },
+    {
+      "name": "202468-1-intensidad-trafico-csv",
+      "columns": [
+        "tipo_elem",
+        "distrito",
+        "id",
+        "cod_cent",
+        "nombre",
+        "utm_x",
+        "utm_y",
+        "longitud",
+        "latitud"
+      ],
+      "dtypes": {
+        "tipo_elem": "str",
+        "distrito": "int64",
+        "id": "int64",
+        "cod_cent": "int64",
+        "nombre": "str",
+        "utm_x": "float64",
+        "utm_y": "float64",
+        "longitud": "float64",
+        "latitud": "float64"
+      }
+    },
+    {
+      "name": "202468-2-intensidad-trafico-csv",
+      "columns": [
+        "tipo_elem",
+        "distrito",
+        "id",
+        "cod_cent",
+        "nombre",
+        "utm_x",
+        "utm_y",
+        "longitud",
+        "latitud"
+      ],
+      "dtypes": {
+        "tipo_elem": "str",
+        "distrito": "int64",
+        "id": "int64",
+        "cod_cent": "str",
+        "nombre": "str",
+        "utm_x": "float64",
+        "utm_y": "float64",
+        "longitud": "float64",
+        "latitud": "float64"
+      }
+    },
+    {
+      "name": "202468-3-intensidad-trafico-csv",
+      "columns": [
+        "tipo_elem",
+        "distrito",
+        "id",
+        "cod_cent",
+        "nombre",
+        "utm_x",
+        "utm_y",
+        "longitud",
+        "latitud"
+      ],
+      "dtypes": {
+        "tipo_elem": "str",
+        "distrito": "int64",
+        "id": "int64",
+        "cod_cent": "int64",
+        "nombre": "str",
+        "utm_x": "float64",
+        "utm_y": "float64",
+        "longitud": "float64",
+        "latitud": "float64"
+      }
+    },
+    {
+      "name": "202468-4-intensidad-trafico-csv",
+      "columns": [
+        "tipo_elem",
+        "distrito",
+        "id",
+        "cod_cent",
+        "nombre",
+        "utm_x",
+        "utm_y",
+        "longitud",
+        "latitud"
+      ],
+      "dtypes": {
+        "tipo_elem": "str",
+        "distrito": "int64",
+        "id": "int64",
+        "cod_cent": "int64",
+        "nombre": "str",
+        "utm_x": "float64",
+        "utm_y": "float64",
+        "longitud": "float64",
+        "latitud": "float64"
+      }
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "n_resources": 162,
+  "samples": [
+    {
+      "name": "208627-0-transporte-ptomedida-historico-zip",
+      "url": "https://datos.madrid.es/dataset/208627-0-transporte-ptomedida-historico/resource/208627-0-transporte-ptomedida-historico-zip/download/208627-0-transporte-ptomedida-historico-zip.zip",
+      "skip": "not a csv"
+    },
+    {
+      "name": "208627-26-transporte-ptomedida-historico-zip",
+      "url": "https://datos.madrid.es/dataset/208627-0-transporte-ptomedida-historico/resource/208627-26-transporte-ptomedida-historico-zip/download/208627-26-transporte-ptomedida-historico-zip.zip",
+      "skip": "not a csv"
+    },
+    {
+      "name": "208627-99-transporte-ptomedida-historico-zip",
+      "url": "https://datos.madrid.es/dataset/208627-0-transporte-ptomedida-historico/resource/208627-99-transporte-ptomedida-historico-zip/download/208627-99-transporte-ptomedida-historico-zip.zip",
+      "skip": "not a csv"
+    }
+  ],
+  "all_names": [
+    "208627-0-transporte-ptomedida-historico-zip",
+    "208627-1-transporte-ptomedida-historico-zip",
+    "208627-2-transporte-ptomedida-historico-zip",
+    "208627-3-transporte-ptomedida-historico-zip",
+    "208627-4-transporte-ptomedida-historico-zip",
+    "208627-5-transporte-ptomedida-historico-zip",
+    "208627-6-transporte-ptomedida-historico-zip",
+    "208627-7-transporte-ptomedida-historico-zip",
+    "208627-8-transporte-ptomedida-historico-zip",
+    "208627-9-transporte-ptomedida-historico-zip",
+    "208627-10-transporte-ptomedida-historico-zip",
+    "208627-11-transporte-ptomedida-historico-zip",
+    "208627-12-transporte-ptomedida-historico-zip",
+    "208627-13-transporte-ptomedida-historico-zip",
+    "208627-14-transporte-ptomedida-historico-zip",
+    "208627-15-transporte-ptomedida-historico-zip",
+    "208627-16-transporte-ptomedida-historico-zip",
+    "208627-17-transporte-ptomedida-historico-zip",
+    "208627-18-transporte-ptomedida-historico-zip",
+    "208627-19-transporte-ptomedida-historico-zip"
+  ]
+}

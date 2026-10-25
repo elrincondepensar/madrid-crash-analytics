@@ -1,0 +1,191 @@
+{
+  "lr": {
+    "model": "lr",
+    "C": 10.0,
+    "fit_seconds": 53.2,
+    "val": {
+      "kappa_q": 0.003909696297258902,
+      "f1_macro": 0.2489971620749395,
+      "mae_ord": 0.5445312311077793,
+      "pr_auc_grave": 0.11123798761610684,
+      "roc_auc_grave": 0.5140277415336753,
+      "pr_auc_macro": 0.35543801237727196,
+      "recall": {
+        "no_injury": 0.9880017263703065,
+        "minor": 0.01568599103657655,
+        "grave": 0.0004598758335249483
+      },
+      "confusion": {
+        "labels": [
+          "no_injury",
+          "minor",
+          "grave"
+        ],
+        "matrix": [
+          [
+            22892,
+            278,
+            0
+          ],
+          [
+            13612,
+            217,
+            5
+          ],
+          [
+            4276,
+            71,
+            2
+          ]
+        ]
+      }
+    },
+    "test": {
+      "kappa_q": 0.006439195574540757,
+      "f1_macro": 0.2542904281903526,
+      "mae_ord": 0.519167781519583,
+      "pr_auc_grave": 0.1104948700060368,
+      "roc_auc_grave": 0.5316097986784822,
+      "pr_auc_macro": 0.35506513797191164,
+      "recall": {
+        "no_injury": 0.9884965649464771,
+        "minor": 0.01602836879432624,
+        "grave": 0.000948316737790422
+      },
+      "confusion": {
+        "labels": [
+          "no_injury",
+          "minor",
+          "grave"
+        ],
+        "matrix": [
+          [
+            12374,
+            143,
+            1
+          ],
+          [
+            6934,
+            113,
+            3
+          ],
+          [
+            2065,
+            42,
+            2
+          ]
+        ]
+      }
+    },
+    "fatal_ranking_val": {
+      "n_fatal": 52,
+      "by_k": {
+        "k=2%": {
+          "k": 828,
+          "tp": 2,
+          "precision": 0.0024,
+          "recall": 0.0385,
+          "lift": 1.921
+        },
+        "k=5%": {
+          "k": 2068,
+          "tp": 3,
+          "precision": 0.0015,
+          "recall": 0.0577,
+          "lift": 1.154
+        },
+        "k=10%": {
+          "k": 4136,
+          "tp": 10,
+          "precision": 0.0024,
+          "recall": 0.1923,
+          "lift": 1.923
+        }
+      }
+    },
+    "fatal_ranking_test": {
+      "n_fatal": 32,
+      "by_k": {
+        "k=2%": {
+          "k": 434,
+          "tp": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "lift": 0.0
+        },
+        "k=5%": {
+          "k": 1084,
+          "tp": 2,
+          "precision": 0.0018,
+          "recall": 0.0625,
+          "lift": 1.25
+        },
+        "k=10%": {
+          "k": 2168,
+          "tp": 6,
+          "precision": 0.0028,
+          "recall": 0.1875,
+          "lift": 1.875
+        }
+      }
+    },
+    "bootstrap_test": {
+      "pr_auc_grave": {
+        "median": 0.11093867808573044,
+        "ci95_low": 0.10314437951861903,
+        "ci95_high": 0.11892184523158283
+      },
+      "recall_grave": {
+        "median": 0.0009409551214653312,
+        "ci95_low": 0.0,
+        "ci95_high": 0.002425475287317392
+      },
+      "precision_grave": {
+        "median": 0.3333333333333333,
+        "ci95_low": 0.0,
+        "ci95_high": 0.8
+      }
+    }
+  },
+  "bart": {
+    "model": "bart",
+    "mode": "smoke",
+    "n_trees": 20,
+    "n_samples": 50,
+    "n_chains": 1,
+    "features_used": 40,
+    "fits": {
+      "grave": {
+        "n_positive_train": 7900,
+        "fit_seconds": 77.6
+      }
+    },
+    "pr_auc_grave": 0.1659,
+    "fatal_ranking_test": {
+      "n_fatal": 32,
+      "by_k": {
+        "k=2%": {
+          "k": 434,
+          "tp": 2,
+          "precision": 0.0046,
+          "recall": 0.0625,
+          "lift": 3.122
+        },
+        "k=5%": {
+          "k": 1084,
+          "tp": 4,
+          "precision": 0.0037,
+          "recall": 0.125,
+          "lift": 2.5
+        },
+        "k=10%": {
+          "k": 2168,
+          "tp": 8,
+          "precision": 0.0037,
+          "recall": 0.25,
+          "lift": 2.5
+        }
+      }
+    }
+  }
+}

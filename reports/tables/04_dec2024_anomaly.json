@@ -1,0 +1,36 @@
+{
+  "n_rows": 1044731,
+  "n_days": 31,
+  "n_stations": 59,
+  "n_fsen": 4,
+  "n_station_fsen_pairs": 236,
+  "expected_rows_per_day": 236,
+  "actual_rows_per_day": 33701.0,
+  "over_factor": 142.80084745762713,
+  "n_duplicate_fdia_fest_fsen": 1037414,
+  "row_count_distribution_per_key": {
+    "min": 1,
+    "median": 1.0,
+    "max": 1,
+    "n_keys": 7316
+  },
+  "sample_station_names": [
+    "ES01",
+    "ES02",
+    "ES03",
+    "ES04",
+    "ES05",
+    "ES06",
+    "ES07",
+    "ES08",
+    "ES09",
+    "ES10"
+  ],
+  "sample_fsen_values": [
+    "1-",
+    "1=",
+    "2-",
+    "2=",
+    NaN
+  ]
+}

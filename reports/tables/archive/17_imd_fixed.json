@@ -1,0 +1,15 @@
+{
+  "n_rows": 1961,
+  "n_parsed": 1961,
+  "n_still_off_range": 1,
+  "TOTAL_fixed_stats": {
+    "min": 66.0,
+    "median": 11054.0,
+    "mean": 17026.3,
+    "p90": 37117.0,
+    "max": 310006.0
+  },
+  "HP_T_fixed_stats": {
+    "median": 12000.0
+  }
+}

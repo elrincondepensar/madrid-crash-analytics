@@ -1,0 +1,225 @@
+{
+  "resources": [
+    {
+      "name": "300228-25-accidentes-trafico-detalle-csv",
+      "url": "https://datos.madrid.es/dataset/300228-0-accidentes-trafico-detalle/resource/300228-25-accidentes-trafico-detalle-csv/download/300228-25-accidentes-trafico-detalle-csv.csv",
+      "has_num_expediente": false,
+      "has_coords": false,
+      "date_extent": {
+        "n_rows": 26578,
+        "n_non_empty": 26578,
+        "min": "01/01/2010",
+        "max": "31/12/2010"
+      },
+      "status": "ok"
+    },
+    {
+      "name": "300228-27-accidentes-trafico-detalle-csv",
+      "url": "https://datos.madrid.es/dataset/300228-0-accidentes-trafico-detalle/resource/300228-27-accidentes-trafico-detalle-csv/download/300228-27-accidentes-trafico-detalle-csv.csv",
+      "has_num_expediente": false,
+      "has_coords": false,
+      "date_extent": {
+        "n_rows": 27342,
+        "n_non_empty": 27342,
+        "min": "01/01/2011",
+        "max": "31/12/2011"
+      },
+      "status": "ok"
+    },
+    {
+      "name": "300228-23-accidentes-trafico-detalle-csv",
+      "url": "https://datos.madrid.es/dataset/300228-0-accidentes-trafico-detalle/resource/300228-23-accidentes-trafico-detalle-csv/download/300228-23-accidentes-trafico-detalle-csv.csv",
+      "has_num_expediente": false,
+      "has_coords": false,
+      "date_extent": {
+        "n_rows": 26982,
+        "n_non_empty": 26982,
+        "min": "01/01/2012",
+        "max": "31/12/2012"
+      },
+      "status": "ok"
+    },
+    {
+      "name": "300228-19-accidentes-trafico-detalle-csv",
+      "url": "https://datos.madrid.es/dataset/300228-0-accidentes-trafico-detalle/resource/300228-19-accidentes-trafico-detalle-csv/download/300228-19-accidentes-trafico-detalle-csv.csv",
+      "has_num_expediente": false,
+      "has_coords": false,
+      "date_extent": {
+        "n_rows": 26839,
+        "n_non_empty": 26839,
+        "min": "01/01/2013",
+        "max": "31/12/2013"
+      },
+      "status": "ok"
+    },
+    {
+      "name": "300228-20-accidentes-trafico-detalle-csv",
+      "url": "https://datos.madrid.es/dataset/300228-0-accidentes-trafico-detalle/resource/300228-20-accidentes-trafico-detalle-csv/download/300228-20-accidentes-trafico-detalle-csv.csv",
+      "has_num_expediente": false,
+      "has_coords": false,
+      "date_extent": {
+        "n_rows": 27967,
+        "n_non_empty": 27967,
+        "min": "01/01/2014",
+        "max": "31/12/2014"
+      },
+      "status": "ok"
+    },
+    {
+      "name": "300228-16-accidentes-trafico-detalle-csv",
+      "url": "https://datos.madrid.es/dataset/300228-0-accidentes-trafico-detalle/resource/300228-16-accidentes-trafico-detalle-csv/download/300228-16-accidentes-trafico-detalle-csv.csv",
+      "has_num_expediente": false,
+      "has_coords": false,
+      "date_extent": {
+        "n_rows": 28172,
+        "n_non_empty": 28172,
+        "min": "01/01/2015",
+        "max": "31/12/2015"
+      },
+      "status": "ok"
+    },
+    {
+      "name": "300228-14-accidentes-trafico-detalle-csv",
+      "url": "https://datos.madrid.es/dataset/300228-0-accidentes-trafico-detalle/resource/300228-14-accidentes-trafico-detalle-csv/download/300228-14-accidentes-trafico-detalle-csv.csv",
+      "has_num_expediente": false,
+      "has_coords": false,
+      "date_extent": {
+        "n_rows": 29201,
+        "n_non_empty": 29201,
+        "min": "01/01/2016",
+        "max": "31/12/2016"
+      },
+      "status": "ok"
+    },
+    {
+      "name": "300228-32-accidentes-trafico-detalle-csv",
+      "url": "https://datos.madrid.es/dataset/300228-0-accidentes-trafico-detalle/resource/300228-32-accidentes-trafico-detalle-csv/download/300228-32-accidentes-trafico-detalle-csv.csv",
+      "has_num_expediente": false,
+      "has_coords": false,
+      "date_extent": {
+        "n_rows": 29795,
+        "n_non_empty": 29795,
+        "min": "01/01/2017",
+        "max": "31/12/2017"
+      },
+      "status": "ok"
+    },
+    {
+      "name": "300228-13-accidentes-trafico-detalle-csv",
+      "url": "https://datos.madrid.es/dataset/300228-0-accidentes-trafico-detalle/resource/300228-13-accidentes-trafico-detalle-csv/download/300228-13-accidentes-trafico-detalle-csv.csv",
+      "has_num_expediente": false,
+      "has_coords": false,
+      "date_extent": {
+        "n_rows": 30122,
+        "n_non_empty": 30122,
+        "min": "01/01/2018",
+        "max": "31/12/2018"
+      },
+      "status": "ok"
+    },
+    {
+      "name": "300228-11-accidentes-trafico-detalle-csv",
+      "url": "https://datos.madrid.es/dataset/300228-0-accidentes-trafico-detalle/resource/300228-11-accidentes-trafico-detalle-csv/download/300228-11-accidentes-trafico-detalle-csv.csv",
+      "has_num_expediente": true,
+      "has_coords": true,
+      "date_extent": {
+        "n_rows": 51811,
+        "n_non_empty": 51811,
+        "min": "01/01/2019",
+        "max": "31/12/2019"
+      },
+      "status": "ok"
+    },
+    {
+      "name": "300228-8-accidentes-trafico-detalle-csv",
+      "url": "https://datos.madrid.es/dataset/300228-0-accidentes-trafico-detalle/resource/300228-8-accidentes-trafico-detalle-csv/download/300228-8-accidentes-trafico-detalle-csv.csv",
+      "has_num_expediente": true,
+      "has_coords": true,
+      "date_extent": {
+        "n_rows": 32433,
+        "n_non_empty": 32433,
+        "min": "01/01/2020",
+        "max": "31/12/2020"
+      },
+      "status": "ok"
+    },
+    {
+      "name": "300228-33-accidentes-trafico-detalle-csv",
+      "url": "https://datos.madrid.es/dataset/300228-0-accidentes-trafico-detalle/resource/300228-33-accidentes-trafico-detalle-csv/download/300228-33-accidentes-trafico-detalle-csv.csv",
+      "has_num_expediente": true,
+      "has_coords": true,
+      "date_extent": {
+        "n_rows": 41783,
+        "n_non_empty": 41783,
+        "min": "01/01/2021",
+        "max": "31/12/2021"
+      },
+      "status": "ok"
+    },
+    {
+      "name": "300228-5-accidentes-trafico-detalle-csv",
+      "url": "https://datos.madrid.es/dataset/300228-0-accidentes-trafico-detalle/resource/300228-5-accidentes-trafico-detalle-csv/download/300228-5-accidentes-trafico-detalle-csv.csv",
+      "has_num_expediente": true,
+      "has_coords": true,
+      "date_extent": {
+        "n_rows": 47053,
+        "n_non_empty": 47053,
+        "min": "01/01/2022",
+        "max": "31/12/2022"
+      },
+      "status": "ok"
+    },
+    {
+      "name": "300228-3-accidentes-trafico-detalle-csv",
+      "url": "https://datos.madrid.es/dataset/300228-0-accidentes-trafico-detalle/resource/300228-3-accidentes-trafico-detalle-csv/download/300228-3-accidentes-trafico-detalle-csv.csv",
+      "has_num_expediente": true,
+      "has_coords": true,
+      "date_extent": {
+        "n_rows": 48830,
+        "n_non_empty": 48830,
+        "min": "01/01/2023",
+        "max": "31/12/2023"
+      },
+      "status": "ok"
+    },
+    {
+      "name": "300228-2-accidentes-trafico-detalle-csv",
+      "url": "https://datos.madrid.es/dataset/300228-0-accidentes-trafico-detalle/resource/300228-2-accidentes-trafico-detalle-csv/download/300228-2-accidentes-trafico-detalle-csv.csv",
+      "has_num_expediente": true,
+      "has_coords": true,
+      "date_extent": {
+        "n_rows": 49340,
+        "n_non_empty": 49340,
+        "min": "01/01/2024",
+        "max": "31/12/2024"
+      },
+      "status": "ok"
+    },
+    {
+      "name": "300228-1-accidentes-trafico-detalle-csv",
+      "url": "https://datos.madrid.es/dataset/300228-0-accidentes-trafico-detalle/resource/300228-1-accidentes-trafico-detalle-csv/download/accidentes_trafico_policia_2025.csv",
+      "has_num_expediente": true,
+      "has_coords": true,
+      "date_extent": {
+        "n_rows": 51067,
+        "n_non_empty": 51067,
+        "min": "01/01/2025",
+        "max": "31/12/2025"
+      },
+      "status": "ok"
+    },
+    {
+      "name": "300228-34-accidentes-trafico-detalle",
+      "url": "https://datos.madrid.es/dataset/300228-0-accidentes-trafico-detalle/resource/300228-34-accidentes-trafico-detalle/download/accidentes-trafico-pmm-agosto-2026.csv",
+      "has_num_expediente": true,
+      "has_coords": true,
+      "date_extent": {
+        "n_rows": 33322,
+        "n_non_empty": 33322,
+        "min": "01/01/2026",
+        "max": "31/08/2026"
+      },
+      "status": "ok"
+    }
+  ]
+}

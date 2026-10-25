@@ -1,0 +1,29 @@
+{
+  "n_segments": 3928,
+  "n_segments_with_imd": 1353,
+  "n_segments_with_accidents": 3880,
+  "segments_share_with_imd": 0.3445,
+  "segments_share_with_accidents": 0.9878,
+  "accidents_matching": {
+    "n_matched": 101950,
+    "share_matched": 0.7426,
+    "dist_m_quantiles": {
+      "50": 11.0,
+      "90": 62.8,
+      "99": 96.1,
+      "max": 100.0
+    }
+  },
+  "imd_total_per_segment_stats": {
+    "n_notnull": 1353,
+    "median": 13.1,
+    "p90": 43.8
+  },
+  "n_accidents_by_segment_stats": {
+    "n_with_0": 48,
+    "n_with_1_to_5": 508,
+    "n_with_6_to_20": 1714,
+    "n_with_21_plus": 1658,
+    "max": 490
+  }
+}

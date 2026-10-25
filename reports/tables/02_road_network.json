@@ -1,0 +1,37 @@
+{
+  "ckan_search": [
+    {
+      "query": "red viaria",
+      "n_results": 0,
+      "titles": []
+    },
+    {
+      "query": "callejero geometria",
+      "n_results": 3,
+      "titles": [
+        "Callejero oficial. Geometrías de rotulación de callejero (viales y toponimia)",
+        "Callejero oficial. Rotulación del callejero municipal",
+        "Ancho medio de viario"
+      ]
+    },
+    {
+      "query": "cartomadrid",
+      "n_results": 0,
+      "titles": []
+    },
+    {
+      "query": "WFS",
+      "n_results": 0,
+      "titles": []
+    },
+    {
+      "query": "vial wkt",
+      "n_results": 0,
+      "titles": []
+    }
+  ],
+  "notes": [],
+  "callejero_geometry_check": {
+    "error": "HTTPSConnectionPool(host='datos.madrid.es', port=443): Read timed out. (read timeout=90)"
+  }
+}

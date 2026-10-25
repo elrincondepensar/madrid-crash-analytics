@@ -1,0 +1,4 @@
+{
+  "error": "400 Client Error: Bad Request for url: https://sigma.madrid.es/vector/rest/services/CALLEJERO/ROTULACION_CALLEJERO/MapServer/WMSServer?request=GetCapabilities&service=WMS",
+  "url": "https://sigma.madrid.es/vector/rest/services/CALLEJERO/ROTULACION_CALLEJERO/MapServer/WMSServer?request=GetCapabilities&service=WMS"
+}

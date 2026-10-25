@@ -1,0 +1,35 @@
+{
+  "n_resources": 21,
+  "resources": [
+    {
+      "name": "203962-0-trafico-imd-xlsx",
+      "url": "https://datos.madrid.es/dataset/203962-0-trafico-imd/resource/203962-0-trafico-imd-xlsx/download/203962-0-trafico-imd-xlsx.xlsx",
+      "format": "XLSX",
+      "size": 161011
+    },
+    {
+      "name": "203962-1-trafico-imd-xls",
+      "url": "https://datos.madrid.es/dataset/203962-0-trafico-imd/resource/203962-1-trafico-imd-xls/download/203962-1-trafico-imd-xls",
+      "format": "XLS",
+      "size": 1159680
+    },
+    {
+      "name": "203962-2-trafico-imd-xlsx",
+      "url": "https://datos.madrid.es/dataset/203962-0-trafico-imd/resource/203962-2-trafico-imd-xlsx/download/203962-2-trafico-imd-xlsx",
+      "format": "XLSX",
+      "size": 125772
+    },
+    {
+      "name": "203962-3-trafico-imd-kmz",
+      "url": "https://datos.madrid.es/dataset/203962-0-trafico-imd/resource/203962-3-trafico-imd-kmz/download/203962-3-trafico-imd-kmz",
+      "format": "KMZ",
+      "size": 293084
+    },
+    {
+      "name": "203962-4-trafico-imd-zip",
+      "url": "https://datos.madrid.es/dataset/203962-0-trafico-imd/resource/203962-4-trafico-imd-zip/download/203962-4-trafico-imd-zip",
+      "format": "ZIP",
+      "size": 334585
+    }
+  ]
+}
